@@ -20,12 +20,19 @@ namespace DocumentViewer
         {
             InitializeComponent();
 
-            // temporary reading of pdf from disk and rendering every page to png
+            // temporary reading of pdf from disk
             byte[] pdfBytes = File.ReadAllBytes(@"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\test.pdf");
 
+            // temporary reading of pdf from disk and rendering first page to png
             PdfRenderer.TestRenderFirstPage(
                 pdfBytes,
-                @"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\izhod.png"
+                @"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\output_one.png"
+            );
+
+            // temporary reading of pdf from disk and rendering every page to png
+            PdfRenderer.RenderAllPagesToDisk(
+                pdfBytes,
+                @"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\OutputFolder"
             );
         }
     }

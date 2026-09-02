@@ -18,4 +18,8 @@
     <PackageReference Include="Docnet.Core" Version="2.6.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestFiles\OutputFolder\" />
+  </ItemGroup>
+
 </Project>

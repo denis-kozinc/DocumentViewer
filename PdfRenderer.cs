@@ -50,8 +50,50 @@ namespace DocumentViewer
                 }
             }
         }
+        public static void RenderAllPagesToDisk(byte[] pdfBytes, string outputFolder, int maxDimension = 2000)
+        {
+            // open PDF from bytes and prepare a reader for all pages
+            using (var docReader =
+                   DocLib.Instance.GetDocReader(pdfBytes, new PageDimensions(maxDimension, maxDimension)))
+            {
+                int pageCount = docReader.GetPageCount();
+                for (int i = 0; i < pageCount; i++)
+                {
+                    // render each page and save it to disk
+                    using (var pageReader = docReader.GetPageReader(i))
+                    {
+                        // render page - get raw pixel data (BGRA = blue, green, red, alpha/transparency)
+                        var rawBytes = pageReader.GetImage();
+                        int width = pageReader.GetPageWidth();
+                        int height = pageReader.GetPageHeight();
 
-        
+                        // convert raw bytes to a Bitmap object (still has transparent background)
+                        using (var transparentBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb))
+                        {
+                            var bmpData = transparentBitmap.LockBits(
+                                new Rectangle(0, 0, width, height),
+                                ImageLockMode.WriteOnly,
+                                PixelFormat.Format32bppArgb);
+
+                            // copy raw pixel data directly into the bitmap (faster than pixel by pixel)
+                            System.Runtime.InteropServices.Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
+                            transparentBitmap.UnlockBits(bmpData);
+
+                            // draw the transparent image onto a white background to get the final look (without blackness)
+                            using (var finalBitmap = new Bitmap(width, height, PixelFormat.Format32bppRgb))
+                            using (var g = Graphics.FromImage(finalBitmap))
+                            {
+                                g.Clear(Color.White);
+                                g.DrawImage(transparentBitmap, 0, 0); // GDI+ automatically handles blending
+
+                                // save the final result as PNG to disk
+                                finalBitmap.Save(Path.Combine(outputFolder, $"page_{i}.png"), ImageFormat.Png);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
