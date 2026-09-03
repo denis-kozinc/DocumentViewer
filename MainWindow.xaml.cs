@@ -23,6 +23,14 @@ namespace DocumentViewer
             // temporary reading of pdf from disk
             byte[] pdfBytes = File.ReadAllBytes(@"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\test.pdf");
 
+            // render all pages and display them
+            var pages = PdfRenderer.RenderAllPages(pdfBytes);
+            foreach (var page in pages)
+            {
+                PagesPanel.Children.Add(new Image { Source = page });
+            }
+
+            /*  --OLD CODE--
             // temporary reading of pdf from disk and rendering first page to png
             PdfRenderer.TestRenderFirstPage(
                 pdfBytes,
@@ -34,6 +42,9 @@ namespace DocumentViewer
                 pdfBytes,
                 @"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\OutputFolder"
             );
+            */
+
+
         }
     }
 }       
