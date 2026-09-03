@@ -29,7 +29,6 @@ namespace DocumentViewer
             {
                 PagesPanel.Children.Add(new Image { Source = page });
             }
-
             /*  --OLD CODE--
             // temporary reading of pdf from disk and rendering first page to png
             PdfRenderer.TestRenderFirstPage(
@@ -43,8 +42,39 @@ namespace DocumentViewer
                 @"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\OutputFolder"
             );
             */
+        }
 
+        // Constants for zoom limits
+        private const double MinZoom = 0.1;
+        private const double MaxZoom = 3.0;
 
+        // Event handlers for zoom buttons
+        private void ZoomOut_OnClick(object sender, RoutedEventArgs e)
+        {
+            ZoomTransform.ScaleX = Math.Max(MinZoom, ZoomTransform.ScaleX - 0.1);
+            ZoomTransform.ScaleY = Math.Max(MinZoom, ZoomTransform.ScaleY - 0.1);
+        }
+        private void ZoomIn_OnClick(object sender, RoutedEventArgs e)
+        {
+            ZoomTransform.ScaleX = Math.Min(MaxZoom, ZoomTransform.ScaleX + 0.1);
+            ZoomTransform.ScaleY = Math.Min(MaxZoom, ZoomTransform.ScaleY + 0.1);
+        }
+
+        // Event handler for mouse wheel zooming
+        private void ScrollViewer_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                double zoomDelta = e.Delta > 0 ? 0.1 : -0.1;
+                double newZoom = ZoomTransform.ScaleX + zoomDelta;
+
+                if (newZoom >= MinZoom && newZoom <= MaxZoom)
+                {
+                    ZoomTransform.ScaleX = newZoom;
+                    ZoomTransform.ScaleY = newZoom;
+                }
+            }
         }
     }
 }       

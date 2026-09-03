@@ -6,7 +6,20 @@
         xmlns:local="clr-namespace:DocumentViewer"
         mc:Ignorable="d"
         Title="Document Viewer" Height="800" Width="700">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <StackPanel x:Name="PagesPanel"/>
-    </ScrollViewer>
+    <DockPanel>
+        <StackPanel DockPanel.Dock ="Top" Orientation="Horizontal">
+            <Button Content="-" Click="ZoomOut_OnClick" Width="30"></Button>
+            <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
+                       TextAlignment="Center" VerticalAlignment="Center" Margin="10,0">
+            </TextBlock>
+            <Button Content="+" Click="ZoomIn_OnClick" Width="30"></Button>
+        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
+            <StackPanel x:Name="PagesPanel">
+                <StackPanel.LayoutTransform>
+                    <ScaleTransform x:Name="ZoomTransform" ScaleX="1" ScaleY="1"/>
+                </StackPanel.LayoutTransform>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
 </Window>
