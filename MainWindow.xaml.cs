@@ -27,7 +27,14 @@ namespace DocumentViewer
             var pages = PdfRenderer.RenderAllPages(pdfBytes);
             foreach (var page in pages)
             {
-                PagesPanel.Children.Add(new Image { Source = page });
+                var border = new Border
+                {
+                    BorderBrush = Brushes.Gray,
+                    BorderThickness = new Thickness(0,0,0,2),
+                    //Margin = new Thickness(0,0,0,1),
+                    Child = new Image { Source = page },
+                };
+                PagesPanel.Children.Add(border);
             }
             /*  --OLD CODE--
             // temporary reading of pdf from disk and rendering first page to png
@@ -61,7 +68,7 @@ namespace DocumentViewer
         }
 
         // Event handler for mouse wheel zooming
-        private void ScrollViewer_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        private void PdfScrollViewer_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
@@ -75,6 +82,23 @@ namespace DocumentViewer
                     ZoomTransform.ScaleY = newZoom;
                 }
             }
+        }
+
+        // Event handler for scroll changes to update the current page display
+        private void PdfScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            int totalPages = PagesPanel.Children.Count;
+            if (totalPages == 0) return;
+
+            double scrollPosition = e.VerticalOffset;
+            double totalHeight = e.ExtentHeight;
+            if (totalHeight <= 0) return;
+
+            double singleHeight = totalHeight / totalPages;
+            int currentPage = (int)(scrollPosition / singleHeight) + 1;
+            currentPage = Math.Max(1, Math.Min(currentPage, totalPages));
+
+            CurrentPageText.Text = $"Page {currentPage} of {totalPages}";
         }
     }
 }       

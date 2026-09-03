@@ -8,13 +8,14 @@
         Title="Document Viewer" Height="800" Width="700">
     <DockPanel>
         <StackPanel DockPanel.Dock ="Top" Orientation="Horizontal">
-            <Button Content="-" Click="ZoomOut_OnClick" Width="30"></Button>
+            <Button Content="-" Click="ZoomOut_OnClick" Width="30"/>
             <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
-                       TextAlignment="Center" VerticalAlignment="Center" Margin="10,0">
-            </TextBlock>
-            <Button Content="+" Click="ZoomIn_OnClick" Width="30"></Button>
+                       TextAlignment="Center" VerticalAlignment="Center" Margin="10,0"/>
+            <Button Content="+" Click="ZoomIn_OnClick" Width="30"/>
+            <TextBlock x:Name="CurrentPageText" VerticalAlignment="Center" Margin="10,0"></TextBlock>
         </StackPanel>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
+        <ScrollViewer x:Name="PdfScrollViewer" ScrollChanged="PdfScrollViewer_OnScrollChanged"
+            VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel">
             <StackPanel x:Name="PagesPanel">
                 <StackPanel.LayoutTransform>
                     <ScaleTransform x:Name="ZoomTransform" ScaleX="1" ScaleY="1"/>
