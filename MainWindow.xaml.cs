@@ -37,6 +37,7 @@ namespace DocumentViewer
                 };
                 PagesPanel.Children.Add(border);
             }
+
             /*  --OLD CODE--
             // temporary reading of pdf from disk and rendering first page to png
             PdfRenderer.TestRenderFirstPage(
