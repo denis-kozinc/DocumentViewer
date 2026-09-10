@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DocumentViewer"
         mc:Ignorable="d"
-        Title="Document Viewer" Height="800" Width="700">
+        Title="Document Viewer" Width="1200" Height="800" 
+        WindowStartupLocation="CenterScreen" MinWidth="600" MinHeight="400">
     <DockPanel>
         <StackPanel DockPanel.Dock ="Top" Orientation="Horizontal">
             <Button Content="-" Click="ZoomOut_OnClick" Width="30"/>
