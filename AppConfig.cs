@@ -2,16 +2,23 @@
 using Microsoft.Extensions.Configuration;
 
 
-public static class AppConfig
+namespace DocumentViewer
 {
-    private static IConfiguration config;
-    static AppConfig()
+    /// <summary>
+    /// Provides access to application configuration values.
+    /// </summary>
+    public static class AppConfig
     {
-        config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+        private static IConfiguration config;
+        static AppConfig()
+        {
+            config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+        }
+
+        public static string EBA_ENDPOINT => config["EBA_ENDPOINT"];
+        public static string USER => config["USER"];
+        public static string PASS => config["PASS"];
+        public static string API_TOKEN => config["API_TOKEN"];
     }
 
-	public static string EBA_ENDPOINT => config["EBA_ENDPOINT"];
-    public static string USER => config["USER"];
-    public static string PASS => config["PASS"];
-    public static string API_TOKEN => config["API_TOKEN"];
 }

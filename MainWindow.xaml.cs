@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -20,9 +22,13 @@ namespace DocumentViewer
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += MainWindow_Loaded;
+        }
 
-            // temporary reading of pdf from disk
-            byte[] pdfBytes = File.ReadAllBytes(@"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\test.pdf");
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            byte[] pdfBytes = await GetDocumentPdfAsync("ec72894678714b2595dbd17d79882f7b");
+
 
             // render all pages and display them
             var pages = PdfRenderer.RenderAllPages(pdfBytes);
@@ -31,26 +37,44 @@ namespace DocumentViewer
                 var border = new Border
                 {
                     BorderBrush = Brushes.Gray,
-                    BorderThickness = new Thickness(0,0,0,2),
+                    BorderThickness = new Thickness(0, 0, 0, 2),
                     //Margin = new Thickness(0,0,0,1),
                     Child = new Image { Source = page },
                 };
                 PagesPanel.Children.Add(border);
             }
+        }
 
-            /*  --OLD CODE--
-            // temporary reading of pdf from disk and rendering first page to png
-            PdfRenderer.TestRenderFirstPage(
-                pdfBytes,
-                @"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\output_one.png"
-            );
+        public static async Task<byte[]> GetDocumentPdfAsync(string documentId)
+        {
+            using (var handler = new HttpClientHandler())
+            {
+                // TODO: Certificate validation is disabled for the dev server.
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
-            // temporary reading of pdf from disk and rendering every page to png
-            PdfRenderer.RenderAllPagesToDisk(
-                pdfBytes,
-                @"C:\Users\denisk\source\repos\DocumentViewer\TestFiles\OutputFolder"
-            );
-            */
+                using (var client = new HttpClient(handler))
+                {
+                    string url = $"{AppConfig.EBA_ENDPOINT}/content/{documentId}?ReturnVisualisation=true";
+
+                    client.DefaultRequestHeaders.Authorization =
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppConfig.API_TOKEN);
+
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+
+                    string json = await response.Content.ReadAsStringAsync();
+
+                    using (JsonDocument doc = JsonDocument.Parse(json))
+                    {
+                        string pdfBase64 = doc.RootElement.GetProperty("Pdf").GetString();
+                        byte[] pdfBytes = Convert.FromBase64String(pdfBase64);
+                        return pdfBytes;
+                    }
+                }
+            }
         }
 
         // Constants for zoom limits

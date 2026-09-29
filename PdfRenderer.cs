@@ -12,6 +12,9 @@ using System.Windows.Media.Imaging;
 
 namespace DocumentViewer
 {
+    /// <summary>
+    /// Provides functionality for rendering PDF pages as images.
+    /// </summary>
     public static class PdfRenderer
     {
         // helper method to render a page to a Bitmap
