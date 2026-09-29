@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using DocumentViewer.Auth;
 
 namespace DocumentViewer
 {
@@ -19,15 +20,23 @@ namespace DocumentViewer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly EbaApiClient _apiClient;
         public MainWindow()
         {
             InitializeComponent();
+
+            IAuthProvider authProvider = string.IsNullOrEmpty(AppConfig.API_TOKEN)
+                ? new PasswordAuthProvider()
+                : new TokenAuthProvider();
+
+            _apiClient = new EbaApiClient(authProvider);
+
             Loaded += MainWindow_Loaded;
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            byte[] pdfBytes = await GetDocumentPdfAsync("ec72894678714b2595dbd17d79882f7b");
+            var pdfBytes = await _apiClient.GetDocumentPdfAsync("ec72894678714b2595dbd17d79882f7b");
 
 
             // render all pages and display them
@@ -42,38 +51,6 @@ namespace DocumentViewer
                     Child = new Image { Source = page },
                 };
                 PagesPanel.Children.Add(border);
-            }
-        }
-
-        public static async Task<byte[]> GetDocumentPdfAsync(string documentId)
-        {
-            using (var handler = new HttpClientHandler())
-            {
-                // TODO: Certificate validation is disabled for the dev server.
-                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-
-                using (var client = new HttpClient(handler))
-                {
-                    string url = $"{AppConfig.EBA_ENDPOINT}/content/{documentId}?ReturnVisualisation=true";
-
-                    client.DefaultRequestHeaders.Authorization =
-                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppConfig.API_TOKEN);
-
-                    client.DefaultRequestHeaders.Accept.Add(
-                        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
-                    var response = await client.GetAsync(url);
-                    response.EnsureSuccessStatusCode();
-
-                    string json = await response.Content.ReadAsStringAsync();
-
-                    using (JsonDocument doc = JsonDocument.Parse(json))
-                    {
-                        string pdfBase64 = doc.RootElement.GetProperty("Pdf").GetString();
-                        byte[] pdfBytes = Convert.FromBase64String(pdfBase64);
-                        return pdfBytes;
-                    }
-                }
             }
         }
 

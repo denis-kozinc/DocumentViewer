@@ -80,41 +80,6 @@ namespace DocumentViewer
             return pages;
         }
 
-        /* --OLD CODE --
-        // Renderira prvo stran PDF-ja v PNG sliko z belim ozadjem
-        // maxDimension = max širina/višina v pikslih (nadzoruje kvaliteto)
-        public static void TestRenderFirstPage(byte[] pdfBytes, string outputPath, int maxDimension = 2000)
-        {
-            // Odpri PDF iz bajtov in pripravi bralnik za prvo stran (index 0)
-            using (var docReader = DocLib.Instance.GetDocReader(pdfBytes, new PageDimensions(maxDimension, maxDimension)))
-            using (var pageReader = docReader.GetPageReader(0))
-            using (var bitmap = RenderPageToBitmap(pageReader))
-            {
-                // Shrani končno sliko kot PNG na disk
-                bitmap.Save(outputPath, ImageFormat.Png);
-            }
-        }
-
-        // renders all pages of a PDF to PNG images on disk
-        public static void RenderAllPagesToDisk(byte[] pdfBytes, string outputFolder, int maxDimension = 2000)
-        {
-            // open PDF from bytes and prepare a reader for all pages
-            using (var docReader =
-                   DocLib.Instance.GetDocReader(pdfBytes, new PageDimensions(maxDimension, maxDimension)))
-            {
-                int pageCount = docReader.GetPageCount();
-                for (int i = 0; i < pageCount; i++)
-                {
-                    // render each page and save it to disk
-                    using (var pageReader = docReader.GetPageReader(i))
-                    using (var bitMap = RenderPageToBitmap(pageReader))
-                    {
-                        bitMap.Save(Path.Combine(outputFolder, $"page_{i + 1}.png"), ImageFormat.Png);
-                    }
-                }
-            }
-        }
-        */
     }
 }
 
