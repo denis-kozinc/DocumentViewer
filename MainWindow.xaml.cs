@@ -36,9 +36,24 @@ namespace DocumentViewer
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var pdfBytes = await _apiClient.GetDocumentPdfAsync("ec72894678714b2595dbd17d79882f7b");
+            // TODO: Replace hardcoded filter with parameters from command-line args (Pantheon integration)
+            var idList = await _apiClient.QueryContentsAsync("111");
 
+            DocumentListBox.ItemsSource = idList;
 
+            if (idList.Count > 0)
+            {
+                await DisplayDocumentAsync(idList[0]);
+            }
+        }
+
+        private async Task DisplayDocumentAsync(string documentId)
+        {
+            CurrentDocumentText.Text = $"Document: {documentId}";
+
+            PagesPanel.Children.Clear();
+            // Fetch the PDF document by its ID
+            var pdfBytes = await _apiClient.GetDocumentPdfAsync(documentId);
             // render all pages and display them
             var pages = PdfRenderer.RenderAllPages(pdfBytes);
             foreach (var page in pages)
@@ -47,7 +62,6 @@ namespace DocumentViewer
                 {
                     BorderBrush = Brushes.Gray,
                     BorderThickness = new Thickness(0, 0, 0, 2),
-                    //Margin = new Thickness(0,0,0,1),
                     Child = new Image { Source = page },
                 };
                 PagesPanel.Children.Add(border);
@@ -102,6 +116,14 @@ namespace DocumentViewer
             currentPage = Math.Max(1, Math.Min(currentPage, totalPages));
 
             CurrentPageText.Text = $"Page {currentPage} of {totalPages}";
+        }
+
+        private async void DocumentListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DocumentListBox.SelectedItem is string selectedId)
+            {
+                await DisplayDocumentAsync(selectedId);
+            }
         }
     }
 }       

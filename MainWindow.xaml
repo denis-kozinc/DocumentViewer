@@ -14,9 +14,14 @@
                        TextAlignment="Center" VerticalAlignment="Center" Margin="10,0"/>
             <Button Content="+" Click="ZoomIn_OnClick" Width="30"/>
             <TextBlock x:Name="CurrentPageText" VerticalAlignment="Center" Margin="10,0"></TextBlock>
+            <TextBlock x:Name="CurrentDocumentText" VerticalAlignment="Center" Margin="10,0"></TextBlock>
         </StackPanel>
+        
+        <ListBox x:Name="DocumentListBox" DockPanel.Dock="Left" Width="200" 
+                 SelectionChanged="DocumentListBox_OnSelectionChanged"/>
+        
         <ScrollViewer x:Name="PdfScrollViewer" ScrollChanged="PdfScrollViewer_OnScrollChanged"
-            VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel">
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel">
             <StackPanel x:Name="PagesPanel">
                 <StackPanel.LayoutTransform>
                     <ScaleTransform x:Name="ZoomTransform" ScaleX="1" ScaleY="1"/>
