@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using DocumentViewer.Auth;
+using DocumentViewer.Key;
 
 namespace DocumentViewer
 {
@@ -21,19 +22,31 @@ namespace DocumentViewer
     public partial class MainWindow : Window
     {
         private readonly EbaApiClient _apiClient;
+        private readonly IDocumentKeyProvider _keyProvider;
+        private readonly ManualDocumentKeyProvider _manualKeyProvider = new ManualDocumentKeyProvider();
         public MainWindow()
         {
             InitializeComponent();
 
+            // Determine the authentication method based on the presence of an API token
             IAuthProvider authProvider = string.IsNullOrEmpty(AppConfig.API_TOKEN)
                 ? new PasswordAuthProvider()
                 : new TokenAuthProvider();
 
             _apiClient = new EbaApiClient(authProvider);
 
+            _keyProvider = _manualKeyProvider;
+            // Subscribe to the DocumentKeyChanged event to update the displayed document when a new key is selected
+            _keyProvider.DocumentKeyChanged += async (sender, key) =>
+            {
+                await DisplayDocumentAsync(key);
+                PdfScrollViewer.ScrollToTop();
+            };
+
             Loaded += MainWindow_Loaded;
         }
 
+        // Event handler for the Loaded event of the MainWindow
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // TODO: Replace hardcoded filter with parameters from command-line args (Pantheon integration)
@@ -43,10 +56,11 @@ namespace DocumentViewer
 
             if (idList.Count > 0)
             {
-                await DisplayDocumentAsync(idList[0]);
+                _manualKeyProvider.SelectDocument(idList[0]);
             }
         }
 
+        // Method to display the selected document
         private async Task DisplayDocumentAsync(string documentId)
         {
             CurrentDocumentText.Text = $"Document: {documentId}";
@@ -68,61 +82,12 @@ namespace DocumentViewer
             }
         }
 
-        // Constants for zoom limits
-        private const double MinZoom = 0.1;
-        private const double MaxZoom = 3.0;
-
-        // Event handlers for zoom buttons
-        private void ZoomOut_OnClick(object sender, RoutedEventArgs e)
-        {
-            ZoomTransform.ScaleX = Math.Max(MinZoom, ZoomTransform.ScaleX - 0.1);
-            ZoomTransform.ScaleY = Math.Max(MinZoom, ZoomTransform.ScaleY - 0.1);
-        }
-        private void ZoomIn_OnClick(object sender, RoutedEventArgs e)
-        {
-            ZoomTransform.ScaleX = Math.Min(MaxZoom, ZoomTransform.ScaleX + 0.1);
-            ZoomTransform.ScaleY = Math.Min(MaxZoom, ZoomTransform.ScaleY + 0.1);
-        }
-
-        // Event handler for mouse wheel zooming
-        private void PdfScrollViewer_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (Keyboard.Modifiers == ModifierKeys.Control)
-            {
-                e.Handled = true;
-                double zoomDelta = e.Delta > 0 ? 0.1 : -0.1;
-                double newZoom = ZoomTransform.ScaleX + zoomDelta;
-
-                if (newZoom >= MinZoom && newZoom <= MaxZoom)
-                {
-                    ZoomTransform.ScaleX = newZoom;
-                    ZoomTransform.ScaleY = newZoom;
-                }
-            }
-        }
-
-        // Event handler for scroll changes to update the current page display
-        private void PdfScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
-        {
-            int totalPages = PagesPanel.Children.Count;
-            if (totalPages == 0) return;
-
-            double scrollPosition = e.VerticalOffset;
-            double totalHeight = e.ExtentHeight;
-            if (totalHeight <= 0) return;
-
-            double singleHeight = totalHeight / totalPages;
-            int currentPage = (int)(scrollPosition / singleHeight) + 1;
-            currentPage = Math.Max(1, Math.Min(currentPage, totalPages));
-
-            CurrentPageText.Text = $"Page {currentPage} of {totalPages}";
-        }
-
-        private async void DocumentListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        // Event handler for document selection changes in the ListBox
+        private void DocumentListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DocumentListBox.SelectedItem is string selectedId)
             {
-                await DisplayDocumentAsync(selectedId);
+                _manualKeyProvider.SelectDocument(selectedId);
             }
         }
     }
