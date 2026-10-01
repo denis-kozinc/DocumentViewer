@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DocumentViewer.Key
+﻿namespace DocumentViewer.Key
 {
     /// <summary>
     /// Interface for providing document keys.

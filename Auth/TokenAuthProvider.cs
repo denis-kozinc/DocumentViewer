@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DocumentViewer.Auth
+﻿namespace DocumentViewer.Auth
 {
     /// <summary>
     /// Authentication provider that uses a token for authentication.

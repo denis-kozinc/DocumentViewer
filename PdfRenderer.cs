@@ -1,13 +1,9 @@
 ﻿using Docnet.Core;
 using Docnet.Core.Models;
 using Docnet.Core.Readers;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Media.Imaging;
 
 namespace DocumentViewer

@@ -1,9 +1,5 @@
 ﻿using DocumentViewer.Auth;
-using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Text.Json;
 
 namespace DocumentViewer
@@ -15,7 +11,7 @@ namespace DocumentViewer
     {
         private readonly HttpClient _httpClient;
 
-        public EbaApiClient (IAuthProvider authProvider)
+        public EbaApiClient(IAuthProvider authProvider)
         {
             var handler = new HttpClientHandler();
             // Certificate validation bypassed on purpose, some internal servers dont have valid certificates
@@ -36,7 +32,7 @@ namespace DocumentViewer
 
             string json = await response.Content.ReadAsStringAsync();
 
-            var idList = new List<String>();
+            var idList = new List<string>();
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
                 foreach (var element in doc.RootElement.GetProperty("Data").EnumerateArray())

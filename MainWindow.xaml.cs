@@ -1,18 +1,8 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
+﻿using DocumentViewer.Auth;
+using DocumentViewer.Key;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using DocumentViewer.Auth;
-using DocumentViewer.Key;
 
 namespace DocumentViewer
 {
@@ -68,6 +58,8 @@ namespace DocumentViewer
             PagesPanel.Children.Clear();
             // Fetch the PDF document by its ID
             var pdfBytes = await _apiClient.GetDocumentPdfAsync(documentId);
+            // TODO: Add access logging here
+
             // render all pages and display them
             var pages = PdfRenderer.RenderAllPages(pdfBytes);
             foreach (var page in pages)
@@ -91,4 +83,4 @@ namespace DocumentViewer
             }
         }
     }
-}       
+}

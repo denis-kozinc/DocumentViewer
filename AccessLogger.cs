@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 
 namespace DocumentViewer
 {
@@ -15,6 +12,7 @@ namespace DocumentViewer
         public static void LogAccess(string documentKey)
         {
             string logEntry = $"{DateTime.Now} | User: {Environment.UserName} | Document: {documentKey}";
+            // TODO: Consider using a more robust logging framework (e.g., NLog, Serilog) for better log management and formatting.
             File.AppendAllText("access_log.txt", logEntry + Environment.NewLine);
         }
     }
