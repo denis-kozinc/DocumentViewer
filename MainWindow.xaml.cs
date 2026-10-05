@@ -40,7 +40,7 @@ namespace DocumentViewer
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // TODO: Replace hardcoded filter with parameters from command-line args (Pantheon integration)
-            var idList = await _apiClient.QueryContentsAsync("111");
+            var idList = await _apiClient.SearchDocumentsAsync("test");
 
             DocumentListBox.ItemsSource = idList;
 
@@ -53,12 +53,13 @@ namespace DocumentViewer
         // Method to display the selected document
         private async Task DisplayDocumentAsync(string documentId)
         {
-            CurrentDocumentText.Text = $"Document: {documentId}";
+            CurrentDocumentText.Text = $"Loading: {documentId}";
 
-            PagesPanel.Children.Clear();
             // Fetch the PDF document by its ID
             var pdfBytes = await _apiClient.GetDocumentPdfAsync(documentId);
             // TODO: Add access logging here
+
+            PagesPanel.Children.Clear();
 
             // render all pages and display them
             var pages = PdfRenderer.RenderAllPages(pdfBytes);
@@ -72,6 +73,7 @@ namespace DocumentViewer
                 };
                 PagesPanel.Children.Add(border);
             }
+            CurrentDocumentText.Text = $"Document: {documentId}";
         }
 
         // Event handler for document selection changes in the ListBox

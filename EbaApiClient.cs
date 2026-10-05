@@ -23,9 +23,9 @@ namespace DocumentViewer
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<List<string>> QueryContentsAsync(string testno)
+        public async Task<List<string>> SearchDocumentsAsync(string test)
         {
-            string url = $"{AppConfig.EBA_ENDPOINT}/contents?INV_DOC_NUM={testno}";
+            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetList?DocType=racuni&acIssuer={Uri.EscapeDataString(test)}";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
@@ -35,7 +35,7 @@ namespace DocumentViewer
             var idList = new List<string>();
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
-                foreach (var element in doc.RootElement.GetProperty("Data").EnumerateArray())
+                foreach (var element in doc.RootElement.GetProperty("Result").GetProperty("docs").EnumerateArray())
                 {
                     idList.Add(element.GetString());
                 }
@@ -44,7 +44,7 @@ namespace DocumentViewer
         }
         public async Task<byte[]> GetDocumentPdfAsync(string documentId)
         {
-            string url = $"{AppConfig.EBA_ENDPOINT}/content/{documentId}?ReturnVisualisation=true";
+            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetDoc?DocId={documentId}";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
@@ -53,7 +53,7 @@ namespace DocumentViewer
 
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
-                string pdfBase64 = doc.RootElement.GetProperty("Pdf").GetString();
+                string pdfBase64 = doc.RootElement.GetProperty("Result").GetProperty("pdf").GetString();
                 byte[] pdfBytes = Convert.FromBase64String(pdfBase64);
                 return pdfBytes;
             }
