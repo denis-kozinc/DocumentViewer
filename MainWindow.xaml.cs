@@ -4,6 +4,7 @@ using DocumentViewer.Search;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Net.Http;
 
 namespace DocumentViewer
 {
@@ -42,16 +43,27 @@ namespace DocumentViewer
         // Event handler for the Loaded event of the MainWindow
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // TODO: Replace hardcoded filter with parameters from command-line args (Pantheon integration)
-            /* var idList = await _apiClient.SearchDocumentsAsync("test");
-
-            DocumentListBox.ItemsSource = idList;
-
-            if (idList.Count > 0)
+            try
             {
-                _manualKeyProvider.SelectDocument(idList[0]);
+                ShowStatus(null);
+
+                var idList = await _apiClient.SearchDocumentsAsync(_filter);
+
+                if (idList.Count == 0)
+                {
+                    ShowStatus("No documents found.");
+                    return;
+                }
+
+                DocumentListBox.ItemsSource = idList;
+                // Selecting the first item raises OnSelectionChanged, which displays the document
+                DocumentListBox.SelectedIndex = 0;
+
             }
-            */
+            catch (Exception exception)
+            {
+                ShowError(exception);
+            }
         }
 
         // Method to display the selected document
@@ -59,25 +71,33 @@ namespace DocumentViewer
         {
             CurrentDocumentText.Text = $"Loading: {documentId}";
 
-            // Fetch the PDF document by its ID
-            var pdfBytes = await _apiClient.GetDocumentPdfAsync(documentId);
-            // TODO: Add access logging here
-
-            PagesPanel.Children.Clear();
-
-            // render all pages and display them
-            var pages = PdfRenderer.RenderAllPages(pdfBytes);
-            foreach (var page in pages)
+            try
             {
-                var border = new Border
+                ShowStatus(null);
+
+                // Fetch the PDF document by its ID
+                var pdfBytes = await _apiClient.GetDocumentPdfAsync(documentId);
+                // TODO: Add access logging here
+
+                // render all pages and display them
+                var pages = PdfRenderer.RenderAllPages(pdfBytes);
+                PagesPanel.Children.Clear();
+                foreach (var page in pages)
                 {
-                    BorderBrush = Brushes.Gray,
-                    BorderThickness = new Thickness(0, 0, 0, 2),
-                    Child = new Image { Source = page },
-                };
-                PagesPanel.Children.Add(border);
+                    var border = new Border
+                    {
+                        BorderBrush = Brushes.Gray,
+                        BorderThickness = new Thickness(0, 0, 0, 2),
+                        Child = new Image { Source = page },
+                    };
+                    PagesPanel.Children.Add(border);
+                }
+                CurrentDocumentText.Text = $"Document: {documentId}";
             }
-            CurrentDocumentText.Text = $"Document: {documentId}";
+            catch (Exception exception)
+            {
+                ShowError(exception);
+            }
         }
 
         // Event handler for document selection changes in the ListBox
@@ -87,6 +107,30 @@ namespace DocumentViewer
             {
                 _manualKeyProvider.SelectDocument(selectedId);
             }
+        }
+
+        // Shows a message over the viewer, null hides it
+        private void ShowStatus(string? message)
+        {
+            StatusText.Text = message ?? string.Empty;
+            StatusText.Visibility = string.IsNullOrEmpty(message) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        private void ShowError(Exception exception)
+        {
+            // Only the server error message is shown to the user, other messages could contain sensitive information
+            string message = exception switch
+            {
+                EbaApiException => exception.Message,
+                HttpRequestException =>
+                    "The server is unreachable or rejected the request. Check the connection and try again.",
+                TaskCanceledException => "The server is not responding. Try again.",
+                FormatException => "The document is invalid.",
+                _ => "An unexpected error occurred."
+            };
+            PagesPanel.Children.Clear();
+            CurrentDocumentText.Text = string.Empty;
+            ShowStatus(message);
         }
     }
 }

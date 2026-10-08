@@ -26,7 +26,16 @@ namespace DocumentViewer
                 return;
             }
 
-            new MainWindow(filter).Show();
+            try
+            {
+                new MainWindow(filter).Show();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("The application could not be started. Check the configuration.", 
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown(1);
+            }
         }
     }
 

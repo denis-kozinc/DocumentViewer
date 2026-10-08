@@ -19,14 +19,19 @@
         
         <ListBox x:Name="DocumentListBox" DockPanel.Dock="Left" Width="200" 
                  SelectionChanged="DocumentListBox_OnSelectionChanged"/>
-        
-        <ScrollViewer x:Name="PdfScrollViewer" ScrollChanged="PdfScrollViewer_OnScrollChanged"
-                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel">
-            <StackPanel x:Name="PagesPanel">
-                <StackPanel.LayoutTransform>
-                    <ScaleTransform x:Name="ZoomTransform" ScaleX="1" ScaleY="1"/>
-                </StackPanel.LayoutTransform>
-            </StackPanel>
-        </ScrollViewer>
+
+        <Grid>
+            <ScrollViewer x:Name="PdfScrollViewer" ScrollChanged="PdfScrollViewer_OnScrollChanged"
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel">
+                <StackPanel x:Name="PagesPanel">
+                    <StackPanel.LayoutTransform>
+                        <ScaleTransform x:Name="ZoomTransform" ScaleX="1" ScaleY="1"/>
+                    </StackPanel.LayoutTransform>
+                </StackPanel>
+            </ScrollViewer>
+
+            <TextBlock x:Name="StatusText" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                       Foreground="IndianRed" FontSize="14" TextWrapping="Wrap" Margin="20"></TextBlock>
+        </Grid>
     </DockPanel>
 </Window>
