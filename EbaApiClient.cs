@@ -83,12 +83,12 @@ namespace DocumentViewer
             if (result.GetProperty("errorCode").GetDouble() == SuccessCode)
                 return;
 
-            // erroText is not a typo
-            // erroText is null on success, so the kind is checked before reading it as a string
-            JsonElement text = result.GetProperty("erroText");
-            string message = text.ValueKind == JsonValueKind.String
-                ? text.GetString()!
-                : "The server reported an error.";
+            // errorText is null on success, so the kind is checked before reading it as a string
+            string message = "The server reported an error.";
+            if (result.TryGetProperty("errorText", out JsonElement text) && text.ValueKind == JsonValueKind.String)
+            {
+                message = text.GetString()!;
+            }
             throw new EbaApiException(message);
         }
 
