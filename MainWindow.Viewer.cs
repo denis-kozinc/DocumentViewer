@@ -1,6 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
+using System.Windows.Media.Imaging;
 
 namespace DocumentViewer
 {
@@ -9,6 +12,9 @@ namespace DocumentViewer
         // Constants for zoom limits
         private const double MinZoom = 0.1;
         private const double MaxZoom = 3.0;
+
+        // One shared, frozen effect for all pages: frozen objects are immutable, so WPF can reuse them without tracking changes
+        private static readonly DropShadowEffect PageShadow = CreatePageShadow();
 
         // Event handlers for zoom buttons
         private void ZoomOut_OnClick(object sender, RoutedEventArgs e)
@@ -54,6 +60,38 @@ namespace DocumentViewer
             currentPage = Math.Max(1, Math.Min(currentPage, totalPages));
 
             CurrentPageText.Text = $"Page {currentPage} of {totalPages}";
+        }
+
+        private void ShowPages(IReadOnlyList<BitmapSource> pages)
+        {
+            PagesPanel.Children.Clear();
+            foreach (var page in pages)
+            {
+                var image = new Image { Source = page };
+                RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
+
+                var border = new Border
+                {
+                    Margin = new Thickness(24, 12, 24, 12),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Effect = PageShadow,
+                    Child = image,
+                };
+                PagesPanel.Children.Add(border);
+            }
+        }
+
+        private static DropShadowEffect CreatePageShadow()
+        {
+            var shadow = new DropShadowEffect
+            {
+                BlurRadius = 12,
+                ShadowDepth = 2,
+                Opacity = 0.4,
+                Color = Colors.Black,
+            };
+            shadow.Freeze();
+            return shadow;
         }
     }
 }

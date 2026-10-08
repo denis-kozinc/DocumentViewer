@@ -78,22 +78,6 @@ namespace DocumentViewer
             }
         }
 
-        // One shared, frozen effect for all pages: frozen objects are immutable, so WPF can reuse them without tracking changes
-        private static readonly DropShadowEffect PageShadow = CreatePageShadow();
-
-        private static DropShadowEffect CreatePageShadow()
-        {
-            var shadow = new DropShadowEffect
-            {
-                BlurRadius = 12,
-                ShadowDepth = 2,
-                Opacity = 0.4,
-                Color = Colors.Black,
-            };
-            shadow.Freeze();
-            return shadow;
-        }
-
         // Method to display the selected document
         private async Task DisplayDocumentAsync(string documentId)
         {
@@ -103,7 +87,6 @@ namespace DocumentViewer
             _loadCts = new CancellationTokenSource();
             // Local copy: the field is replaced by the next call, but this call must keep its own token
             var ct = _loadCts.Token;
-
 
             CurrentDocumentText.Text = $"Loading: {documentId}";
 
@@ -119,21 +102,7 @@ namespace DocumentViewer
 
                 // render all pages and display them
                 var pages = PdfRenderer.RenderAllPages(pdfBytes);
-                PagesPanel.Children.Clear();
-                foreach (var page in pages)
-                {
-                    var image = new Image { Source = page };
-                    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);                    
-
-                    var border = new Border
-                    {
-                        Margin = new Thickness(24, 12, 24, 12),
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Effect = PageShadow,
-                        Child = image,
-                    };
-                    PagesPanel.Children.Add(border);
-                }
+                ShowPages(pages);
 
                 CurrentDocumentText.Text = $"Document: {documentId}";
             }
