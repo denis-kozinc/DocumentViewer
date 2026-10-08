@@ -18,6 +18,10 @@ namespace DocumentViewer
         private readonly IDocumentKeyProvider _keyProvider;
         private readonly ManualDocumentKeyProvider _manualKeyProvider = new ManualDocumentKeyProvider();
         private readonly DocumentSearchFilter _filter;
+
+        // Cancels the previous document load when a new one starts
+        private CancellationTokenSource? _loadCts;
+
         public MainWindow(DocumentSearchFilter filter)
         {
             InitializeComponent();
@@ -76,6 +80,14 @@ namespace DocumentViewer
         // Method to display the selected document
         private async Task DisplayDocumentAsync(string documentId)
         {
+            // A newer selection makes the previous load outdated, so it is cancelled
+            _loadCts?.Cancel();
+            _loadCts?.Dispose();
+            _loadCts = new CancellationTokenSource();
+            // Local copy: the field is replaced by the next call, but this call must keep its own token
+            var ct = _loadCts.Token;
+
+
             CurrentDocumentText.Text = $"Loading: {documentId}";
 
             try
@@ -83,7 +95,9 @@ namespace DocumentViewer
                 ShowStatus(null);
 
                 // Fetch the PDF document by its ID
-                var pdfBytes = await _apiClient.GetDocumentPdfAsync(documentId);
+                var pdfBytes = await _apiClient.GetDocumentPdfAsync(documentId, ct);
+                // The selection may have changed while this continuation was waiting to run
+                ct.ThrowIfCancellationRequested();
                 // TODO: Add access logging here
 
                 // render all pages and display them
@@ -99,7 +113,12 @@ namespace DocumentViewer
                     };
                     PagesPanel.Children.Add(border);
                 }
+
                 CurrentDocumentText.Text = $"Document: {documentId}";
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                // Replaced by a newer load, not an error. A timeout does not match, since ct is not cancelled then
             }
             catch (Exception exception)
             {

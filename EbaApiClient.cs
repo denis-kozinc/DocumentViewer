@@ -30,17 +30,17 @@ namespace DocumentViewer
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<byte[]> GetDocumentPdfAsync(string documentId)
+        public async Task<byte[]> GetDocumentPdfAsync(string documentId, CancellationToken ct)
         {
             string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/getPDFDocumentByExternId?DocType={DocType}&externId={Uri.EscapeDataString(documentId)}";
 
             // TODO: Remove this debug line in production, as it may expose sensitive information
             Debug.WriteLine(url);
 
-            using var response = await _httpClient.GetAsync(url);
+            using var response = await _httpClient.GetAsync(url, ct);
             response.EnsureSuccessStatusCode();
 
-            string json = await response.Content.ReadAsStringAsync();
+            string json = await response.Content.ReadAsStringAsync(ct);
 
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
