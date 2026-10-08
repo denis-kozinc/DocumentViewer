@@ -83,6 +83,7 @@ namespace DocumentViewer
             if (result.GetProperty("errorCode").GetDouble() == SuccessCode)
                 return;
 
+            // erroText is not a typo
             // erroText is null on success, so the kind is checked before reading it as a string
             JsonElement text = result.GetProperty("erroText");
             string message = text.ValueKind == JsonValueKind.String

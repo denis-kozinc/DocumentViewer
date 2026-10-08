@@ -2,7 +2,6 @@
 
 namespace DocumentViewer.Auth
 {
-    // TODO: Comes later, but will be used in the future to access documents with username and password authentication.
     public class PasswordAuthProvider : IAuthProvider
     {
         public string GetAuthHeader()
