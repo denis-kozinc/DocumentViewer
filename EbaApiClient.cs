@@ -41,7 +41,7 @@ namespace DocumentViewer
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
                 JsonElement result = doc.RootElement.GetProperty("Result");
-                EnsureSuccess(result);
+                EnsureDocSuccess(result);
 
                 string? pdfBase64 = result.GetProperty("pdf").GetString();
                 if (string.IsNullOrEmpty(pdfBase64))
@@ -66,7 +66,7 @@ namespace DocumentViewer
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
                 JsonElement result = doc.RootElement.GetProperty("Result");
-                EnsureSuccess(result);
+                EnsureListSuccess(result);
 
                 foreach (var element in result.GetProperty("docs").EnumerateArray())
                 {
@@ -77,7 +77,7 @@ namespace DocumentViewer
         }
 
         // Throws when the server reports an error in the body, because it answers with 200 OK even for some errors
-        private static void EnsureSuccess(JsonElement result)
+        private static void EnsureListSuccess(JsonElement result)
         {
             // The code is written as 200.00000000, so it is read as a double
             if (result.GetProperty("errorCode").GetDouble() == SuccessCode)
@@ -89,6 +89,20 @@ namespace DocumentViewer
                 ? text.GetString()!
                 : "The server reported an error.";
             throw new EbaApiException(message);
+        }
+
+        private static void EnsureDocSuccess(JsonElement result)
+        {
+            // The code is written as 200.00000000, so it is read as a double
+            if (!(result.TryGetProperty("error", out JsonElement error)) || JsonValueKind.Null == error.ValueKind)
+                return;
+            // A non-string value is unexpected, so it gets the generic message below
+            string? message = error.ValueKind == JsonValueKind.String ? error.GetString() : null;
+            if (message == string.Empty)
+                return;
+
+            // Same as in EnsureListSuccess, the server message is shown as it is
+            throw new EbaApiException(message ?? "The server reported an error.");
         }
 
         // Builds query parameters from the DocumentSearchFilter, skipping unset values
