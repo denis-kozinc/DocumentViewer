@@ -13,8 +13,8 @@ namespace DocumentViewer
     {
         private readonly HttpClient _httpClient;
         private const string DocType = "racuni";
-
         private const string DateFormat = "yyyy-MM-dd";
+        private const int SuccessCode = 200;
 
         public EbaApiClient(IAuthProvider authProvider)
         {
@@ -39,7 +39,14 @@ namespace DocumentViewer
 
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
-                string pdfBase64 = doc.RootElement.GetProperty("Result").GetProperty("pdf").GetString();
+                JsonElement result = doc.RootElement.GetProperty("Result");
+                EnsureSuccess(result);
+
+                string? pdfBase64 = result.GetProperty("pdf").GetString();
+                if (string.IsNullOrEmpty(pdfBase64))
+                {
+                    throw new EbaApiException("Failed to retrieve PDF data.");
+                }
                 byte[] pdfBytes = Convert.FromBase64String(pdfBase64);
                 return pdfBytes;
             }
@@ -57,12 +64,30 @@ namespace DocumentViewer
             var idList = new List<string>();
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
-                foreach (var element in doc.RootElement.GetProperty("Result").GetProperty("docs").EnumerateArray())
+                JsonElement result = doc.RootElement.GetProperty("Result");
+                EnsureSuccess(result);
+
+                foreach (var element in result.GetProperty("docs").EnumerateArray())
                 {
                     idList.Add(element.GetString());
                 }
             }
             return idList;
+        }
+
+        // Throws when the server reports an error in the body, because it answers with 200 OK even for some errors
+        private static void EnsureSuccess(JsonElement result)
+        {
+            // The code is written as 200.00000000, so it is read as a double
+            if (result.GetProperty("errorCode").GetDouble() == SuccessCode)
+                return;
+
+            // errorText is null on success, so the kind is checked before reading it as a string
+            JsonElement text = result.GetProperty("errorText");
+            string message = text.ValueKind == JsonValueKind.String
+                ? text.GetString()!
+                : "The server reported an error.";
+            throw new EbaApiException(message);
         }
 
         // Builds query parameters from the DocumentSearchFilter, skipping unset values
