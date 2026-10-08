@@ -1,5 +1,6 @@
 ﻿using DocumentViewer.Auth;
 using DocumentViewer.Key;
+using DocumentViewer.Search;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -14,9 +15,11 @@ namespace DocumentViewer
         private readonly EbaApiClient _apiClient;
         private readonly IDocumentKeyProvider _keyProvider;
         private readonly ManualDocumentKeyProvider _manualKeyProvider = new ManualDocumentKeyProvider();
-        public MainWindow()
+        private readonly DocumentSearchFilter _filter;
+        public MainWindow(DocumentSearchFilter filter)
         {
             InitializeComponent();
+            _filter = filter;
 
             // Determine the authentication method based on the presence of an API token
             IAuthProvider authProvider = string.IsNullOrEmpty(AppConfig.API_TOKEN)
@@ -40,7 +43,7 @@ namespace DocumentViewer
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // TODO: Replace hardcoded filter with parameters from command-line args (Pantheon integration)
-            var idList = await _apiClient.SearchDocumentsAsync("test");
+            /* var idList = await _apiClient.SearchDocumentsAsync("test");
 
             DocumentListBox.ItemsSource = idList;
 
@@ -48,6 +51,7 @@ namespace DocumentViewer
             {
                 _manualKeyProvider.SelectDocument(idList[0]);
             }
+            */
         }
 
         // Method to display the selected document
