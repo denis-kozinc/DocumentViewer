@@ -84,7 +84,7 @@ namespace DocumentViewer
                 return;
 
             // errorText is null on success, so the kind is checked before reading it as a string
-            JsonElement text = result.GetProperty("errorText");
+            JsonElement text = result.GetProperty("erroText");
             string message = text.ValueKind == JsonValueKind.String
                 ? text.GetString()!
                 : "The server reported an error.";

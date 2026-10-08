@@ -28,7 +28,15 @@ namespace DocumentViewer
 
             try
             {
+                // Fail early with a clear message, before the window starts calling the API
+                AppConfig.Validate();
                 new MainWindow(filter).Show();
+            }
+            catch (AppConfigException exception)
+            {
+                // The message names the setting but never its value, so it is safe to show
+                MessageBox.Show(exception.Message, "Invalid configuration", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown(1);
             }
             catch (Exception)
             {
