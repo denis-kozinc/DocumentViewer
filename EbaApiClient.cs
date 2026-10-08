@@ -83,7 +83,7 @@ namespace DocumentViewer
             if (result.GetProperty("errorCode").GetDouble() == SuccessCode)
                 return;
 
-            // errorText is null on success, so the kind is checked before reading it as a string
+            // erroText is null on success, so the kind is checked before reading it as a string
             JsonElement text = result.GetProperty("erroText");
             string message = text.ValueKind == JsonValueKind.String
                 ? text.GetString()!
@@ -93,7 +93,6 @@ namespace DocumentViewer
 
         private static void EnsureDocSuccess(JsonElement result)
         {
-            // The code is written as 200.00000000, so it is read as a double
             if (!(result.TryGetProperty("error", out JsonElement error)) || JsonValueKind.Null == error.ValueKind)
                 return;
             // A non-string value is unexpected, so it gets the generic message below
