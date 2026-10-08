@@ -1,4 +1,5 @@
-﻿using DocumentViewer.Auth;
+﻿using System.Diagnostics;
+using DocumentViewer.Auth;
 using DocumentViewer.Search;
 using System.Globalization;
 using System.Net.Http;
@@ -31,7 +32,10 @@ namespace DocumentViewer
 
         public async Task<byte[]> GetDocumentPdfAsync(string documentId)
         {
-            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/getPDFDocumentByExternId?externId={Uri.EscapeDataString(documentId)}";
+            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/getPDFDocumentByExternId?DocType={DocType}&externId={Uri.EscapeDataString(documentId)}";
+
+            // TODO: Remove this debug line in production, as it may expose sensitive information
+            Debug.WriteLine(url);
 
             using var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
