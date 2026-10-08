@@ -30,8 +30,9 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <TextBlock x:Name="StatusText" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                       Foreground="IndianRed" FontSize="14" TextWrapping="Wrap" Margin="20"></TextBlock>
+            <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed" 
+                     HorizontalAlignment="Center" VerticalAlignment="Center" 
+                       Foreground="IndianRed" FontSize="14" TextWrapping="Wrap" Margin="20"></TextBox>
         </Grid>
     </DockPanel>
 </Window>

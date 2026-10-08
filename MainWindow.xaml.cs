@@ -1,10 +1,11 @@
 ﻿using DocumentViewer.Auth;
 using DocumentViewer.Key;
 using DocumentViewer.Search;
+using System.Net.Http;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Net.Http;
 
 namespace DocumentViewer
 {
@@ -125,6 +126,7 @@ namespace DocumentViewer
                 HttpRequestException =>
                     "The server is unreachable or rejected the request. Check the connection and try again.",
                 TaskCanceledException => "The server is not responding. Try again.",
+                JsonException => "The server returned an unexpected response.",
                 FormatException => "The document is invalid.",
                 _ => "An unexpected error occurred."
             };

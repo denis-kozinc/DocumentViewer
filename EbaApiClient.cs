@@ -31,7 +31,7 @@ namespace DocumentViewer
 
         public async Task<byte[]> GetDocumentPdfAsync(string documentId)
         {
-            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetDoc?DocId={Uri.EscapeDataString(documentId)}";
+            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/getPDFDocumentByExternId?externId={Uri.EscapeDataString(documentId)}";
 
             using var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
@@ -40,7 +40,7 @@ namespace DocumentViewer
 
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
-                JsonElement result = doc.RootElement.GetProperty("Result");
+                JsonElement result = doc.RootElement.GetProperty("response");
                 EnsureDocSuccess(result);
 
                 string? pdfBase64 = result.GetProperty("pdf").GetString();
@@ -70,7 +70,8 @@ namespace DocumentViewer
 
                 foreach (var element in result.GetProperty("docs").EnumerateArray())
                 {
-                    idList.Add(element.GetString());
+                    if (element.GetString() is string id)
+                        idList.Add(id);
                 }
             }
             return idList;
@@ -92,9 +93,10 @@ namespace DocumentViewer
             throw new EbaApiException(message);
         }
 
+        // GetDoc reports errors only through the "error" field, unlike GetList which uses errorCode/errorText
         private static void EnsureDocSuccess(JsonElement result)
         {
-            if (!(result.TryGetProperty("error", out JsonElement error)) || JsonValueKind.Null == error.ValueKind)
+            if (!(result.TryGetProperty("error", out JsonElement error)) || error.ValueKind == JsonValueKind.Null)
                 return;
             // A non-string value is unexpected, so it gets the generic message below
             string? message = error.ValueKind == JsonValueKind.String ? error.GetString() : null;
