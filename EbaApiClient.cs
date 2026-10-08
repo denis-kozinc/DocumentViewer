@@ -1,15 +1,20 @@
 ﻿using DocumentViewer.Auth;
+using DocumentViewer.Search;
+using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 
 namespace DocumentViewer
 {
     /// <summary>
-    /// Provides methods to interact with the EBA API to retrieve documents in PDF format.
+    /// Provides methods to interact with the EBA API to search for and retrieve documents in PDF format.
     /// </summary>
     public class EbaApiClient
     {
         private readonly HttpClient _httpClient;
+        private const string DocType = "racuni";
+
+        private const string DateFormat = "yyyy-MM-dd";
 
         public EbaApiClient(IAuthProvider authProvider)
         {
@@ -23,11 +28,28 @@ namespace DocumentViewer
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<List<string>> SearchDocumentsAsync(string test)
+        public async Task<byte[]> GetDocumentPdfAsync(string documentId)
         {
-            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetList?DocType=racuni&acIssuer={Uri.EscapeDataString(test)}";
+            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetDoc?DocId={Uri.EscapeDataString(documentId)}";
 
-            var response = await _httpClient.GetAsync(url);
+            using var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            string json = await response.Content.ReadAsStringAsync();
+
+            using (JsonDocument doc = JsonDocument.Parse(json))
+            {
+                string pdfBase64 = doc.RootElement.GetProperty("Result").GetProperty("pdf").GetString();
+                byte[] pdfBytes = Convert.FromBase64String(pdfBase64);
+                return pdfBytes;
+            }
+        }
+
+        public async Task<List<string>> SearchDocumentsAsync(DocumentSearchFilter filter)
+        {
+            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetList?{BuildQueryParameters(filter)}";
+
+            using var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             string json = await response.Content.ReadAsStringAsync();
@@ -42,21 +64,34 @@ namespace DocumentViewer
             }
             return idList;
         }
-        public async Task<byte[]> GetDocumentPdfAsync(string documentId)
+
+        // Builds query parameters from the DocumentSearchFilter, skipping unset values
+        private static string BuildQueryParameters(DocumentSearchFilter filter)
         {
-            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetDoc?DocId={documentId}";
+            var pairs = new List<string>();
 
-            var response = await _httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
+            // TODO: Move to config if more document types are needed
+            AddPair(pairs, "DocType", DocType);
 
-            string json = await response.Content.ReadAsStringAsync();
+            AddPair(pairs, "acIssuer", filter.AcIssuer);
+            AddPair(pairs, "acKey", filter.AcKey);
+            AddPair(pairs, "acDoc1", filter.AcDoc1);
+            AddPair(pairs, "acDept", filter.AcDept);
+            AddPair(pairs, "acCostDRV", filter.AcCostDrv);
+            AddPair(pairs, "Date_from", filter.DateFrom?.ToString(DateFormat, CultureInfo.InvariantCulture));
+            // The server treats Date_to as exclusive, so add one day to include the last day
+            AddPair(pairs, "Date_to", filter.DateTo?.AddDays(1).ToString(DateFormat, CultureInfo.InvariantCulture));
 
-            using (JsonDocument doc = JsonDocument.Parse(json))
-            {
-                string pdfBase64 = doc.RootElement.GetProperty("Result").GetProperty("pdf").GetString();
-                byte[] pdfBytes = Convert.FromBase64String(pdfBase64);
-                return pdfBytes;
-            }
+            return string.Join("&", pairs);
+        }
+
+        // Adds "name=value" with an encoded value, skips unset values
+        private static void AddPair(List<string> pairs, string name, string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return;
+
+            pairs.Add($"{name}={Uri.EscapeDataString(value)}");
         }
     }
 }
