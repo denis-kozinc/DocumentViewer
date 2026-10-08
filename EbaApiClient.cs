@@ -23,6 +23,7 @@ namespace DocumentViewer
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
             _httpClient = new HttpClient(handler);
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
             _httpClient.DefaultRequestHeaders.Add("Authorization", authProvider.GetAuthHeader());
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
