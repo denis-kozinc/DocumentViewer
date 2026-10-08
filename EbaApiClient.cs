@@ -97,7 +97,7 @@ namespace DocumentViewer
             throw new EbaApiException(message);
         }
 
-        // GetDoc reports errors only through the "error" field, unlike GetList which uses errorCode/errorText
+        // getPDFDocumentByExternId reports errors only through the "error" field, unlike GetList which uses errorCode/errorText
         private static void EnsureDocSuccess(JsonElement result)
         {
             if (!(result.TryGetProperty("error", out JsonElement error)) || error.ValueKind == JsonValueKind.Null)

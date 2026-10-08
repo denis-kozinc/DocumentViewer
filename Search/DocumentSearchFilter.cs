@@ -22,8 +22,5 @@ namespace DocumentViewer.Search
         // The API only filters by date when both are set, the parser enforces that
         public DateOnly? DateFrom { get; init; }
         public DateOnly? DateTo { get; init; }
-
-        // True when the Pantheon key is set, so the PDF can be fetched directly without a list.
-        public bool HasKey => !string.IsNullOrWhiteSpace(AcKey);
     }
 }
