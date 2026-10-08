@@ -22,7 +22,8 @@
 
         <Grid>
             <ScrollViewer x:Name="PdfScrollViewer" ScrollChanged="PdfScrollViewer_OnScrollChanged"
-                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel">
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                          PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel" Background="{DynamicResource ViewerBackgroundBrush}">
                 <StackPanel x:Name="PagesPanel">
                     <StackPanel.LayoutTransform>
                         <ScaleTransform x:Name="ZoomTransform" ScaleX="1" ScaleY="1"/>

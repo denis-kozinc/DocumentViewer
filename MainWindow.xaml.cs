@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 
 namespace DocumentViewer
 {
@@ -77,6 +78,22 @@ namespace DocumentViewer
             }
         }
 
+        // One shared, frozen effect for all pages: frozen objects are immutable, so WPF can reuse them without tracking changes
+        private static readonly DropShadowEffect PageShadow = CreatePageShadow();
+
+        private static DropShadowEffect CreatePageShadow()
+        {
+            var shadow = new DropShadowEffect
+            {
+                BlurRadius = 12,
+                ShadowDepth = 2,
+                Opacity = 0.4,
+                Color = Colors.Black,
+            };
+            shadow.Freeze();
+            return shadow;
+        }
+
         // Method to display the selected document
         private async Task DisplayDocumentAsync(string documentId)
         {
@@ -105,11 +122,15 @@ namespace DocumentViewer
                 PagesPanel.Children.Clear();
                 foreach (var page in pages)
                 {
+                    var image = new Image { Source = page };
+                    RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);                    
+
                     var border = new Border
                     {
-                        BorderBrush = Brushes.Gray,
-                        BorderThickness = new Thickness(0, 0, 0, 2),
-                        Child = new Image { Source = page },
+                        Margin = new Thickness(24, 12, 24, 12),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Effect = PageShadow,
+                        Child = image,
                     };
                     PagesPanel.Children.Add(border);
                 }
