@@ -53,12 +53,6 @@ namespace DocumentViewer
             {
                 ShowStatus(null);
 
-                if (_filter.AcKey != null)
-                {
-                    await DisplayDocumentAsync(_filter.AcKey);
-                    return;
-                }
-
                 var idList = await _apiClient.SearchDocumentsAsync(_filter);
 
                 if (idList.Count == 0)
