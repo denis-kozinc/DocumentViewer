@@ -10,6 +10,8 @@ namespace DocumentViewer.Search
     /// </summary>
     public class DocumentSearchFilter
     {
+        public const string DefaultDocType = "racuni";
+        public string DocType { get; init; } = DefaultDocType;
         public string? AcIssuer { get; init; }
         public string? AcKey { get; init; }
         public string? AcDoc1 { get; init; }

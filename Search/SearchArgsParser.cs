@@ -8,15 +8,13 @@ namespace DocumentViewer.Search
     public static class SearchArgsParser
     {
         private const string Prefix = "--";
-
-        // TODO: Confirm the date format and the separator of adDate
         private const string DateFormat = "yyyy-MM-dd";
         private static readonly char[] DateSeparators = { ';', ',' };
 
         // The known argument names, case-insensitive
         private static readonly HashSet<string> KnownNames = new(StringComparer.OrdinalIgnoreCase)
         {
-            "acIssuer", "acKey", "acDoc1", "acDept", "acCostDRV", "EbaID", "adDate"
+            "DocType", "acIssuer", "acKey", "acDoc1", "acDept", "acCostDRV", "EbaID", "adDate"
         };
 
         // Parses the command-line arguments into a DocumentSearchFilter object
@@ -27,6 +25,7 @@ namespace DocumentViewer.Search
 
             return new DocumentSearchFilter
             {
+                DocType = GetValue(values, "DocType") ?? DocumentSearchFilter.DefaultDocType,
                 AcKey = GetValue(values, "acKey"),
                 AcIssuer = GetValue(values, "acIssuer"),
                 AcDoc1 = GetValue(values, "acDoc1"),

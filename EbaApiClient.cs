@@ -13,7 +13,6 @@ namespace DocumentViewer
     public class EbaApiClient
     {
         private readonly HttpClient _httpClient;
-        private const string DocType = "racuni";
         private const string DateFormat = "yyyy-MM-dd";
         private const int SuccessCode = 200;
 
@@ -32,10 +31,7 @@ namespace DocumentViewer
 
         public async Task<byte[]> GetDocumentPdfAsync(string documentId, CancellationToken ct)
         {
-            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/getPDFDocumentByExternId?DocType={DocType}&externId={Uri.EscapeDataString(documentId)}";
-
-            // TODO: Remove this debug line in production, as it may expose sensitive information
-            Debug.WriteLine(url);
+            string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/getPDFDocumentByExternId?externId={Uri.EscapeDataString(documentId)}";
 
             using var response = await _httpClient.GetAsync(url, ct);
             response.EnsureSuccessStatusCode();
@@ -60,6 +56,9 @@ namespace DocumentViewer
         public async Task<List<string>> SearchDocumentsAsync(DocumentSearchFilter filter)
         {
             string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetList?{BuildQueryParameters(filter)}";
+
+            // TODO: Remove this debug line in production, it may contain sensitive information
+            Debug.WriteLine(url);
 
             using var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
@@ -116,9 +115,7 @@ namespace DocumentViewer
         {
             var pairs = new List<string>();
 
-            // TODO: Move to config if more document types are needed
-            AddPair(pairs, "DocType", DocType);
-
+            AddPair(pairs, "DocType", filter.DocType);
             AddPair(pairs, "acIssuer", filter.AcIssuer);
             AddPair(pairs, "acKey", filter.AcKey);
             AddPair(pairs, "acDoc1", filter.AcDoc1);
