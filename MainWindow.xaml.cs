@@ -53,7 +53,13 @@ namespace DocumentViewer
             {
                 ShowStatus(null);
 
-                var idList = await _apiClient.SearchDocumentsAsync(_filter);
+                IReadOnlyList<string> idList;
+
+                // EbaID names the exact documents, GetList does not know it, so other filters are ignored
+                // TODO: An unknown EbaID stays in the list and fails only on selection, handle it when the cache loads documents ahead
+                if (_filter.EbaIds.Count > 0)
+                    idList = _filter.EbaIds;
+                else idList = await _apiClient.SearchDocumentsAsync(_filter);
 
                 if (idList.Count == 0)
                 {

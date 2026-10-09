@@ -31,7 +31,7 @@ namespace DocumentViewer.Search
                 AcDoc1 = GetValue(values, "acDoc1"),
                 AcDept = GetValue(values, "acDept"),
                 AcCostDrv = GetValue(values, "acCostDRV"),
-                EbaId = GetValue(values, "EbaID"),
+                EbaIds = ParseEbaIds(values),
                 DateFrom = dateFrom,
                 DateTo = dateTo
             };
@@ -105,6 +105,21 @@ namespace DocumentViewer.Search
                 throw new ArgumentException($"Argument '{Prefix}adDate' contains an invalid date.");
 
             return date;
+        }
+
+        private static IReadOnlyList<string> ParseEbaIds(Dictionary<string, string> values)
+        {
+            string? text = GetValue(values, "EbaID");
+            if (text == null)
+                return Array.Empty<string>();
+            var ids = new List<string>();
+            foreach (string id in text.Split(';'))
+            {
+                string trimmed = id.Trim();
+                if (trimmed.Length > 0)
+                    ids.Add(trimmed);
+            }
+            return ids;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace DocumentViewer.Search
         // Multiple values are separated by semicolons and passed on as they are
         public string? AcDept { get; init; }
         public string? AcCostDrv { get; init; }
-        public string? EbaId { get; init; }
+        public IReadOnlyList<string> EbaIds { get; init; } = Array.Empty<string>();
 
         // The API only filters by date when both are set, the parser enforces that
         public DateOnly? DateFrom { get; init; }
