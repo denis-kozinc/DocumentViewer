@@ -95,16 +95,16 @@ namespace DocumentViewer
                 ShowStatus(null);
 
                 // Fetch the PDF document by its ID
-                var pdfBytes = await _apiClient.GetDocumentPdfAsync(documentId, ct);
+                var content = await _apiClient.GetDocumentAsync(documentId, ct);
                 // The selection may have changed while this continuation was waiting to run
                 ct.ThrowIfCancellationRequested();
                 // TODO: Add access logging here
 
                 // render all pages and display them
-                var pages = PdfRenderer.RenderAllPages(pdfBytes);
+                var pages = PdfRenderer.RenderAllPages(content.Pdf);
                 ShowPages(pages);
 
-                CurrentDocumentText.Text = $"Document: {documentId}";
+                CurrentDocumentText.Text = $"Document: {content.DisplayName}";
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
