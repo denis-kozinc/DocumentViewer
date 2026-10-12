@@ -18,6 +18,7 @@ namespace DocumentViewer
         private readonly ManualDocumentKeyProvider _manualKeyProvider = new ManualDocumentKeyProvider();
         private readonly DocumentSearchFilter _filter;
         private readonly DocumentCache _documentCache;
+        private CancellationTokenSource? _searchCts;
 
         public MainWindow(DocumentSearchFilter filter)
         {
@@ -41,11 +42,24 @@ namespace DocumentViewer
             };
 
             Loaded += MainWindow_Loaded;
+            Closed += (sender, e) => { _searchCts?.Cancel(); _searchCts?.Dispose(); };
         }
 
         // Event handler for the Loaded event of the MainWindow
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            await LoadDocumentsAsync(_filter);
+        }
+
+        private async Task LoadDocumentsAsync(DocumentSearchFilter filter)
+        {
+            // A newer search makes the previous load outdated, so it is cancelled
+            _searchCts?.Cancel();
+            _searchCts?.Dispose();
+            _searchCts = new CancellationTokenSource();
+            // Local copy: the field is replaced by the next call, but this call must keep its own token
+            var ct = _searchCts.Token;
+
             try
             {
                 ShowStatus(null);
@@ -53,9 +67,12 @@ namespace DocumentViewer
                 IReadOnlyList<string> idList;
 
                 // EbaID names the exact documents, GetList does not know it, so other filters are ignored
-                if (_filter.EbaIds.Count > 0)
-                    idList = _filter.EbaIds;
-                else idList = await _apiClient.SearchDocumentsAsync(_filter);
+                if (filter.EbaIds.Count > 0)
+                    idList = filter.EbaIds;
+                else
+                    idList = await _apiClient.SearchDocumentsAsync(filter);
+
+                ct.ThrowIfCancellationRequested();
 
                 if (idList.Count == 0)
                 {
@@ -64,7 +81,9 @@ namespace DocumentViewer
                 }
 
                 ShowStatus("Loading documents...");
-                await _documentCache.LoadAllAsync(idList);
+                await _documentCache.LoadAllAsync(idList, ct);
+                // The search may have been replaced while this continuation was waiting to run
+                ct.ThrowIfCancellationRequested();
                 ShowStatus(null);
 
                 var items = idList
@@ -74,7 +93,10 @@ namespace DocumentViewer
                 DocumentListBox.ItemsSource = items;
                 // Selecting the first item raises OnSelectionChanged, which displays the document
                 DocumentListBox.SelectedIndex = 0;
-
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                // The search was cancelled, no need to show an error
             }
             catch (Exception exception)
             {

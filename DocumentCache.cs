@@ -17,11 +17,15 @@ namespace DocumentViewer
         }
 
         // Load all documents
-        public async Task LoadAllAsync(IReadOnlyList<string> ids)
+        public async Task LoadAllAsync(IReadOnlyList<string> ids, CancellationToken ct)
         {
             _documents.Clear();
 
-            var options = new ParallelOptions { MaxDegreeOfParallelism = MaxParallelRequests };
+            var options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = MaxParallelRequests,
+                CancellationToken = ct
+            };
 
             await Parallel.ForEachAsync(ids, options, async (id, token) =>
             {
