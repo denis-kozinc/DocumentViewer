@@ -1,6 +1,5 @@
 ﻿using DocumentViewer.Auth;
 using DocumentViewer.Search;
-using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
@@ -32,9 +31,6 @@ namespace DocumentViewer
         public async Task<List<string>> SearchDocumentsAsync(DocumentSearchFilter filter)
         {
             string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetList?{BuildQueryParameters(filter)}";
-
-            // TODO: Remove this debug line in production, it may contain sensitive information
-            Debug.WriteLine(url);
 
             using var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
