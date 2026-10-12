@@ -1,4 +1,4 @@
-﻿namespace DocumentViewer
+﻿namespace DocumentViewer.Config
 {
     /// <summary>
     /// Thrown when the application configuration is missing or invalid.

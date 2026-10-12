@@ -1,4 +1,6 @@
-﻿namespace DocumentViewer.Auth
+﻿using DocumentViewer.Config;
+
+namespace DocumentViewer.Auth
 {
     /// <summary>
     /// Authentication provider that uses a token for authentication.

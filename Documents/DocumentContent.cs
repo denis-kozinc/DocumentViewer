@@ -1,4 +1,4 @@
-﻿namespace DocumentViewer
+﻿namespace DocumentViewer.Documents
 {
     /// <summary>
     /// A fetched document: the PDF bytes and the names used to show it in the UI.

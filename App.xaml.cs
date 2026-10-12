@@ -1,4 +1,5 @@
-﻿using DocumentViewer.Search;
+﻿using DocumentViewer.Config;
+using DocumentViewer.Search;
 using System.Windows;
 
 namespace DocumentViewer

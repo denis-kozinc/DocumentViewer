@@ -1,10 +1,12 @@
 ﻿using DocumentViewer.Auth;
+using DocumentViewer.Config;
+using DocumentViewer.Documents;
 using DocumentViewer.Search;
 using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace DocumentViewer
+namespace DocumentViewer.Api
 {
     /// <summary>
     /// Provides methods to interact with the EBA API to search for and retrieve documents in PDF format.

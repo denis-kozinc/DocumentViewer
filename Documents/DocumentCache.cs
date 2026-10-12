@@ -1,6 +1,7 @@
-﻿using System.Collections.Concurrent;
+﻿using DocumentViewer.Api;
+using System.Collections.Concurrent;
 
-namespace DocumentViewer
+namespace DocumentViewer.Documents
 {
     /// <summary>
     /// Holds the documents of the current search in memory only

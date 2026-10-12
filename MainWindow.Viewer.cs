@@ -81,6 +81,13 @@ namespace DocumentViewer
             }
         }
 
+        private void ClearViewer()
+        {
+            PagesPanel.Children.Clear();
+            CurrentDocumentText.Text = string.Empty;
+            CurrentPageText.Text = string.Empty;
+        }
+
         private static DropShadowEffect CreatePageShadow()
         {
             var shadow = new DropShadowEffect

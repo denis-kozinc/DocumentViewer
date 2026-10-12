@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using DocumentViewer.Config;
+using System.Text;
 
 namespace DocumentViewer.Auth
 {

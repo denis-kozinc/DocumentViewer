@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 
 
-namespace DocumentViewer
+namespace DocumentViewer.Config
 {
     /// <summary>
     /// Provides access to application configuration values.
@@ -34,7 +34,6 @@ namespace DocumentViewer
             if (!endpointIsHttps)
                 throw new AppConfigException("EBA_ENDPOINT must be set to an https:// address.");
 
-            // Same rule as in MainWindow: a token wins, otherwise user and password are used
             bool hasToken = !string.IsNullOrEmpty(API_TOKEN);
             bool hasPassword = !string.IsNullOrEmpty(USER) && !string.IsNullOrEmpty(PASS);
             if (!hasToken && !hasPassword)

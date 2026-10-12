@@ -1,4 +1,7 @@
-﻿using DocumentViewer.Auth;
+﻿using DocumentViewer.Api;
+using DocumentViewer.Auth;
+using DocumentViewer.Config;
+using DocumentViewer.Documents;
 using DocumentViewer.Key;
 using DocumentViewer.Search;
 using System.Net.Http;
@@ -111,8 +114,7 @@ namespace DocumentViewer
             var content = _documentCache.Get(documentId);
             if (content == null)
             {
-                PagesPanel.Children.Clear();
-                CurrentDocumentText.Text = string.Empty;
+                ClearViewer();
                 ShowStatus("Document not found.");
                 return;
             }
@@ -123,7 +125,7 @@ namespace DocumentViewer
                 // TODO: Add access logging here
                 var pages = PdfRenderer.RenderAllPages(content.Pdf);
                 ShowPages(pages);
-                CurrentDocumentText.Text = $"{content.DisplayName}";
+                CurrentDocumentText.Text = content.DisplayName;
             }
             catch (Exception exception)
             {
@@ -139,13 +141,6 @@ namespace DocumentViewer
                 _manualKeyProvider.SelectDocument(item.Id);
             }
             UpdateNavigationButtons();
-        }
-
-        private void UpdateNavigationButtons()
-        {
-            var index = DocumentListBox.SelectedIndex;
-            PreviousButton.IsEnabled = index > 0;
-            NextButton.IsEnabled = index >= 0 && index < DocumentListBox.Items.Count - 1;
         }
 
         // Shows a message over the viewer, null hides it
@@ -168,25 +163,8 @@ namespace DocumentViewer
                 FormatException => "The document is invalid.",
                 _ => "An unexpected error occurred."
             };
-            PagesPanel.Children.Clear();
-            CurrentDocumentText.Text = string.Empty;
+            ClearViewer();
             ShowStatus(message);
-        }
-
-        private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (DocumentListBox.SelectedIndex > 0)
-            {
-                DocumentListBox.SelectedIndex--;
-            }
-        }
-
-        private void NextButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (DocumentListBox.SelectedIndex < DocumentListBox.Items.Count - 1)
-            {
-                DocumentListBox.SelectedIndex++;
-            }
         }
     }
 }
