@@ -8,15 +8,30 @@
         Title="Document Viewer" Width="1200" Height="800" 
         WindowStartupLocation="CenterScreen" MinWidth="600" MinHeight="400">
     <DockPanel>
-        <StackPanel DockPanel.Dock ="Top" Orientation="Horizontal">
-            <Button Content="-" Click="ZoomOut_OnClick" Width="30"/>
-            <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
-                       TextAlignment="Center" VerticalAlignment="Center" Margin="10,0"/>
-            <Button Content="+" Click="ZoomIn_OnClick" Width="30"/>
-            <TextBlock x:Name="CurrentPageText" VerticalAlignment="Center" Margin="10,0"></TextBlock>
-            <TextBlock x:Name="CurrentDocumentText" VerticalAlignment="Center" Margin="10,0"></TextBlock>
-        </StackPanel>
-        
+        <Grid DockPanel.Dock ="Top" Margin="8,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" >
+                <Button Content="-" Click="ZoomOut_OnClick" Width="30"/>
+                <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
+                           TextAlignment="Center" VerticalAlignment="Center" Margin="10,0"/>
+                <Button Content="+" Click="ZoomIn_OnClick" Width="30"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button x:Name="PreviousButton" Content="&lt;" Width="30" Focusable="False"/>
+                <TextBlock x:Name="CurrentDocumentText" VerticalAlignment="Center" Margin="10,0" 
+                           Width="150" TextTrimming="CharacterEllipsis" TextAlignment="Center"
+                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                <Button x:Name="NextButton" Content="&gt;" Width="30" Focusable="False"/>
+                <Button x:Name="DocumentListButton" Content="..." Width="30"/>
+            </StackPanel>
+            <TextBlock Grid.Column="2" x:Name="CurrentPageText"  VerticalAlignment="Center" 
+                       HorizontalAlignment="Right" Margin="10,0"/>
+        </Grid>
+
         <ListBox x:Name="DocumentListBox" DockPanel.Dock="Left" Width="200" 
                  SelectionChanged="DocumentListBox_OnSelectionChanged" DisplayMemberPath="Label"/>
 
