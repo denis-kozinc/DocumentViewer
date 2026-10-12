@@ -1,13 +1,10 @@
-﻿using System.Formats.Tar;
-using DocumentViewer.Auth;
+﻿using DocumentViewer.Auth;
 using DocumentViewer.Key;
 using DocumentViewer.Search;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Media.Effects;
 
 namespace DocumentViewer
 {

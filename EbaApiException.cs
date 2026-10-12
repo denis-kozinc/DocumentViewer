@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DocumentViewer
+﻿namespace DocumentViewer
 {
     /// <summary>
     /// Represents an exception that occurs when there is an error interacting with the EBA API.

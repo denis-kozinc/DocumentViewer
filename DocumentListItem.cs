@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DocumentViewer
+﻿namespace DocumentViewer
 {
     /// <summary>
     /// A row in the document list: the ID used for loading and the text shown to the user.

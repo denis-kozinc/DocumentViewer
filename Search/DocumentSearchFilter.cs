@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DocumentViewer.Search
+﻿namespace DocumentViewer.Search
 {
     /// <summary>
     /// Holds the optional search criteria for documents. Every field is optional,

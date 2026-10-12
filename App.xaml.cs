@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using DocumentViewer.Search;
+﻿using DocumentViewer.Search;
+using System.Windows;
 
 namespace DocumentViewer
 {
@@ -39,7 +39,7 @@ namespace DocumentViewer
             }
             catch (Exception)
             {
-                MessageBox.Show("The application could not be started. Check the configuration.", 
+                MessageBox.Show("The application could not be started. Check the configuration.",
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(1);
             }

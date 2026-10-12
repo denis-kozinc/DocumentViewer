@@ -1,7 +1,6 @@
-﻿using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
-using DocumentViewer.Auth;
+﻿using DocumentViewer.Auth;
 using DocumentViewer.Search;
+using System.Diagnostics;
 using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
@@ -80,7 +79,7 @@ namespace DocumentViewer
                 : null;
             if (string.IsNullOrEmpty(pdfBase64))
                 throw new EbaApiException("The document has no PDF.");
-            
+
             // Data may be missing, an undefined element is then not an object and every field reads as null
             JsonElement data = root.TryGetProperty("Data", out JsonElement dataElement) ? dataElement : default;
 

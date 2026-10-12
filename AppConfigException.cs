@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DocumentViewer
+﻿namespace DocumentViewer
 {
     /// <summary>
     /// Thrown when the application configuration is missing or invalid.
