@@ -123,7 +123,7 @@ namespace DocumentViewer
                 // TODO: Add access logging here
                 var pages = PdfRenderer.RenderAllPages(content.Pdf);
                 ShowPages(pages);
-                CurrentDocumentText.Text = $"Document: {content.DisplayName}";
+                CurrentDocumentText.Text = $"{content.DisplayName}";
             }
             catch (Exception exception)
             {
@@ -138,6 +138,14 @@ namespace DocumentViewer
             {
                 _manualKeyProvider.SelectDocument(item.Id);
             }
+            UpdateNavigationButtons();
+        }
+
+        private void UpdateNavigationButtons()
+        {
+            var index = DocumentListBox.SelectedIndex;
+            PreviousButton.IsEnabled = index > 0;
+            NextButton.IsEnabled = index >= 0 && index < DocumentListBox.Items.Count - 1;
         }
 
         // Shows a message over the viewer, null hides it
@@ -163,6 +171,22 @@ namespace DocumentViewer
             PagesPanel.Children.Clear();
             CurrentDocumentText.Text = string.Empty;
             ShowStatus(message);
+        }
+
+        private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (DocumentListBox.SelectedIndex > 0)
+            {
+                DocumentListBox.SelectedIndex--;
+            }
+        }
+
+        private void NextButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (DocumentListBox.SelectedIndex < DocumentListBox.Items.Count - 1)
+            {
+                DocumentListBox.SelectedIndex++;
+            }
         }
     }
 }

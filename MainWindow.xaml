@@ -21,12 +21,14 @@
                 <Button Content="+" Click="ZoomIn_OnClick" Width="30"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="PreviousButton" Content="&lt;" Width="30" Focusable="False"/>
+                <Button x:Name="PreviousButton" Content="&lt;" Width="30" Focusable="False" ToolTip="Previous document"
+                        Click="PreviousButton_OnClick" IsEnabled="False"/>
                 <TextBlock x:Name="CurrentDocumentText" VerticalAlignment="Center" Margin="10,0" 
                            Width="150" TextTrimming="CharacterEllipsis" TextAlignment="Center"
                            ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
-                <Button x:Name="NextButton" Content="&gt;" Width="30" Focusable="False"/>
-                <Button x:Name="DocumentListButton" Content="..." Width="30"/>
+                <Button x:Name="NextButton" Content="&gt;" Width="30" Focusable="False" ToolTip="Next document"
+                        Click="NextButton_OnClick" IsEnabled="False"/>
+                <Button x:Name="DocumentListButton" Content="..." Width="30" ToolTip="Select document"/>
             </StackPanel>
             <TextBlock Grid.Column="2" x:Name="CurrentPageText"  VerticalAlignment="Center" 
                        HorizontalAlignment="Right" Margin="10,0"/>
