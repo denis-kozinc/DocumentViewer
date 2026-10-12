@@ -1,4 +1,5 @@
-﻿using DocumentViewer.Auth;
+﻿using System.Formats.Tar;
+using DocumentViewer.Auth;
 using DocumentViewer.Key;
 using DocumentViewer.Search;
 using System.Net.Http;
@@ -19,9 +20,7 @@ namespace DocumentViewer
         private readonly IDocumentKeyProvider _keyProvider;
         private readonly ManualDocumentKeyProvider _manualKeyProvider = new ManualDocumentKeyProvider();
         private readonly DocumentSearchFilter _filter;
-
-        // Cancels the previous document load when a new one starts
-        private CancellationTokenSource? _loadCts;
+        private readonly DocumentCache _documentCache;
 
         public MainWindow(DocumentSearchFilter filter)
         {
@@ -34,12 +33,13 @@ namespace DocumentViewer
                 : new TokenAuthProvider();
 
             _apiClient = new EbaApiClient(authProvider);
+            _documentCache = new DocumentCache(_apiClient);
 
             _keyProvider = _manualKeyProvider;
             // Subscribe to the DocumentKeyChanged event to update the displayed document when a new key is selected
-            _keyProvider.DocumentKeyChanged += async (sender, key) =>
+            _keyProvider.DocumentKeyChanged += (sender, key) =>
             {
-                await DisplayDocumentAsync(key);
+                DisplayDocument(key);
                 PdfScrollViewer.ScrollToTop();
             };
 
@@ -56,7 +56,6 @@ namespace DocumentViewer
                 IReadOnlyList<string> idList;
 
                 // EbaID names the exact documents, GetList does not know it, so other filters are ignored
-                // TODO: An unknown EbaID stays in the list and fails only on selection, handle it when the cache loads documents ahead
                 if (_filter.EbaIds.Count > 0)
                     idList = _filter.EbaIds;
                 else idList = await _apiClient.SearchDocumentsAsync(_filter);
@@ -66,6 +65,10 @@ namespace DocumentViewer
                     ShowStatus("No documents found.");
                     return;
                 }
+
+                ShowStatus("Loading documents...");
+                await _documentCache.LoadAllAsync(idList);
+                ShowStatus(null);
 
                 DocumentListBox.ItemsSource = idList;
                 // Selecting the first item raises OnSelectionChanged, which displays the document
@@ -78,37 +81,25 @@ namespace DocumentViewer
             }
         }
 
-        // Method to display the selected document
-        private async Task DisplayDocumentAsync(string documentId)
+        // Displays the document with the given ID, or shows an error if it is not found or cannot be rendered
+        private void DisplayDocument(string documentId)
         {
-            // A newer selection makes the previous load outdated, so it is cancelled
-            _loadCts?.Cancel();
-            _loadCts?.Dispose();
-            _loadCts = new CancellationTokenSource();
-            // Local copy: the field is replaced by the next call, but this call must keep its own token
-            var ct = _loadCts.Token;
-
-            CurrentDocumentText.Text = $"Loading: {documentId}";
+            var content = _documentCache.Get(documentId);
+            if (content == null)
+            {
+                PagesPanel.Children.Clear();
+                CurrentDocumentText.Text = string.Empty;
+                ShowStatus("Document not found.");
+                return;
+            }
 
             try
             {
                 ShowStatus(null);
-
-                // Fetch the PDF document by its ID
-                var content = await _apiClient.GetDocumentAsync(documentId, ct);
-                // The selection may have changed while this continuation was waiting to run
-                ct.ThrowIfCancellationRequested();
                 // TODO: Add access logging here
-
-                // render all pages and display them
                 var pages = PdfRenderer.RenderAllPages(content.Pdf);
                 ShowPages(pages);
-
                 CurrentDocumentText.Text = $"Document: {content.DisplayName}";
-            }
-            catch (OperationCanceledException) when (ct.IsCancellationRequested)
-            {
-                // Replaced by a newer load, not an error. A timeout does not match, since ct is not cancelled then
             }
             catch (Exception exception)
             {
