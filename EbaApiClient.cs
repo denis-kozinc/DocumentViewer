@@ -30,55 +30,6 @@ namespace DocumentViewer
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<DocumentContent> GetDocumentAsync(string documentId, CancellationToken ct)
-        {
-            // The generic API answers on this path for any DocType
-            string url = $"{AppConfig.EBA_ENDPOINT}/ebanext/racuni/content/{Uri.EscapeDataString(documentId)}?ReturnVisualisation=true";
-
-            using var response = await _httpClient.GetAsync(url, ct);
-            response.EnsureSuccessStatusCode();
-
-            string json = await response.Content.ReadAsStringAsync(ct);
-
-            // The server answers an unknown ID with an empty 200 body
-            if (string.IsNullOrWhiteSpace(json))
-                throw new EbaApiException("Document not found.");
-
-            using JsonDocument doc = JsonDocument.Parse(json);
-            JsonElement root = doc.RootElement;
-
-            string? pdfBase64 = root.TryGetProperty("Pdf", out JsonElement pdfElement)
-                                && pdfElement.ValueKind == JsonValueKind.String
-                ? pdfElement.GetString()
-                : null;
-            if (string.IsNullOrEmpty(pdfBase64))
-                throw new EbaApiException("The document has no PDF.");
-            
-            // Data may be missing, an undefined element is then not an object and every field reads as null
-            // TODO: razumevanje
-            JsonElement data = root.TryGetProperty("Data", out JsonElement dataElement) ? dataElement : default;
-
-            return new DocumentContent(
-                documentId,
-                ReadString(data, "INV_DOC_NUM"),
-                ReadString(root, "ExternId"),
-                Convert.FromBase64String(pdfBase64)
-            );
-        }
-
-        // Returns the trimmed value of a plain string field of the given object, or null when it is missing, empty or not a string
-        private static string? ReadString(JsonElement parent, string name)
-        {
-            if (parent.ValueKind == JsonValueKind.Object
-                && parent.TryGetProperty(name, out JsonElement field)
-                && field.ValueKind == JsonValueKind.String)
-            {
-                string trimmed = field.GetString()!.Trim();
-                return trimmed.Length > 0 ? trimmed : null;
-            }
-            return null;
-        }
-
         public async Task<List<string>> SearchDocumentsAsync(DocumentSearchFilter filter)
         {
             string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetList?{BuildQueryParameters(filter)}";
@@ -104,6 +55,54 @@ namespace DocumentViewer
                 }
             }
             return idList;
+        }
+
+        public async Task<DocumentContent> GetDocumentAsync(string documentId, CancellationToken token)
+        {
+            // The generic API answers on this path for any DocType
+            string url = $"{AppConfig.EBA_ENDPOINT}/ebanext/racuni/content/{Uri.EscapeDataString(documentId)}?ReturnVisualisation=true";
+
+            using var response = await _httpClient.GetAsync(url, token);
+            response.EnsureSuccessStatusCode();
+
+            string json = await response.Content.ReadAsStringAsync(token);
+
+            // The server answers an unknown ID with an empty 200 body
+            if (string.IsNullOrWhiteSpace(json))
+                throw new EbaApiException("Document not found.");
+
+            using JsonDocument doc = JsonDocument.Parse(json);
+            JsonElement root = doc.RootElement;
+
+            string? pdfBase64 = root.TryGetProperty("Pdf", out JsonElement pdfElement)
+                                && pdfElement.ValueKind == JsonValueKind.String
+                ? pdfElement.GetString()
+                : null;
+            if (string.IsNullOrEmpty(pdfBase64))
+                throw new EbaApiException("The document has no PDF.");
+            
+            // Data may be missing, an undefined element is then not an object and every field reads as null
+            JsonElement data = root.TryGetProperty("Data", out JsonElement dataElement) ? dataElement : default;
+
+            return new DocumentContent(
+                documentId,
+                ReadString(data, "INV_DOC_NUM"),
+                ReadString(root, "ExternId"),
+                Convert.FromBase64String(pdfBase64)
+            );
+        }
+
+        // Returns the trimmed value of a plain string field of the given object, or null when it is missing, empty or not a string
+        private static string? ReadString(JsonElement parent, string name)
+        {
+            if (parent.ValueKind == JsonValueKind.Object
+                && parent.TryGetProperty(name, out JsonElement field)
+                && field.ValueKind == JsonValueKind.String)
+            {
+                string trimmed = field.GetString()!.Trim();
+                return trimmed.Length > 0 ? trimmed : null;
+            }
+            return null;
         }
 
         // Throws when the server reports an error in the body, because it answers with 200 OK even for some errors

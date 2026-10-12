@@ -13,6 +13,7 @@ namespace DocumentViewer
     {
         private readonly EbaApiClient _apiClient;
         private readonly ConcurrentDictionary<string, DocumentContent> _documents = new();
+        private const int MaxParallelRequests = 4;
 
         public DocumentCache(EbaApiClient apiClient)
         {
@@ -24,17 +25,19 @@ namespace DocumentViewer
         {
             _documents.Clear();
 
-            foreach (string id in ids)
+            var options = new ParallelOptions { MaxDegreeOfParallelism = MaxParallelRequests };
+
+            await Parallel.ForEachAsync(ids, options, async (id, token) =>
             {
                 try
                 {
-                    _documents[id] = await _apiClient.GetDocumentAsync(id, CancellationToken.None);
+                    _documents[id] = await _apiClient.GetDocumentAsync(id, token);
                 }
-                catch (EbaApiException exception)
+                catch (EbaApiException)
                 {
                     // Unknown ID or a document without PDF
                 }
-            }
+            });
         }
 
         public DocumentContent? Get(string id) => _documents.GetValueOrDefault(id);
