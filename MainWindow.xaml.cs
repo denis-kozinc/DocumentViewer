@@ -70,7 +70,11 @@ namespace DocumentViewer
                 await _documentCache.LoadAllAsync(idList);
                 ShowStatus(null);
 
-                DocumentListBox.ItemsSource = idList;
+                var items = idList
+                    .Select(id => new DocumentListItem(id, _documentCache.Get(id)?.DisplayName ?? id))
+                    .ToList();
+
+                DocumentListBox.ItemsSource = items;
                 // Selecting the first item raises OnSelectionChanged, which displays the document
                 DocumentListBox.SelectedIndex = 0;
 
@@ -82,6 +86,7 @@ namespace DocumentViewer
         }
 
         // Displays the document with the given ID, or shows an error if it is not found or cannot be rendered
+        // synchronous on purpose, because all the documents are already loaded in the cache, so no async is needed
         private void DisplayDocument(string documentId)
         {
             var content = _documentCache.Get(documentId);
@@ -110,9 +115,9 @@ namespace DocumentViewer
         // Event handler for document selection changes in the ListBox
         private void DocumentListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DocumentListBox.SelectedItem is string selectedId)
+            if (DocumentListBox.SelectedItem is DocumentListItem item)
             {
-                _manualKeyProvider.SelectDocument(selectedId);
+                _manualKeyProvider.SelectDocument(item.Id);
             }
         }
 

@@ -18,7 +18,7 @@
         </StackPanel>
         
         <ListBox x:Name="DocumentListBox" DockPanel.Dock="Left" Width="200" 
-                 SelectionChanged="DocumentListBox_OnSelectionChanged"/>
+                 SelectionChanged="DocumentListBox_OnSelectionChanged" DisplayMemberPath="Label"/>
 
         <Grid>
             <ScrollViewer x:Name="PdfScrollViewer" ScrollChanged="PdfScrollViewer_OnScrollChanged"
