@@ -142,6 +142,7 @@ namespace DocumentViewer
             }
             UpdateNavigationButtons();
             DocumentListPopup.IsOpen = false;
+            PdfScrollViewer.Focus();
         }
         private void DocumentListButton_OnClick(object sender, RoutedEventArgs e)
         {
