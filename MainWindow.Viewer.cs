@@ -12,6 +12,8 @@ namespace DocumentViewer
         // Constants for zoom limits
         private const double MinZoom = 0.1;
         private const double MaxZoom = 3.0;
+        private const double ZoomStep = 0.1;
+        private const double DefaultZoom = 1.0;
 
         // One shared, frozen effect for all pages: frozen objects are immutable, so WPF can reuse them without tracking changes
         private static readonly DropShadowEffect PageShadow = CreatePageShadow();
@@ -19,13 +21,14 @@ namespace DocumentViewer
         // Event handlers for zoom buttons
         private void ZoomOut_OnClick(object sender, RoutedEventArgs e)
         {
-            ZoomTransform.ScaleX = Math.Max(MinZoom, ZoomTransform.ScaleX - 0.1);
-            ZoomTransform.ScaleY = Math.Max(MinZoom, ZoomTransform.ScaleY - 0.1);
+            ZoomTransform.ScaleX = Math.Max(MinZoom, ZoomTransform.ScaleX - ZoomStep);
+            ZoomTransform.ScaleY = Math.Max(MinZoom, ZoomTransform.ScaleY - ZoomStep);
         }
+
         private void ZoomIn_OnClick(object sender, RoutedEventArgs e)
         {
-            ZoomTransform.ScaleX = Math.Min(MaxZoom, ZoomTransform.ScaleX + 0.1);
-            ZoomTransform.ScaleY = Math.Min(MaxZoom, ZoomTransform.ScaleY + 0.1);
+            ZoomTransform.ScaleX = Math.Min(MaxZoom, ZoomTransform.ScaleX + ZoomStep);
+            ZoomTransform.ScaleY = Math.Min(MaxZoom, ZoomTransform.ScaleY + ZoomStep);
         }
 
         // Event handler for mouse wheel zooming
@@ -34,13 +37,7 @@ namespace DocumentViewer
             if (Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                double zoomDelta = e.Delta > 0 ? 0.1 : -0.1;
-                double newZoom = ZoomTransform.ScaleX + zoomDelta;
-
-                if (newZoom >= MinZoom && newZoom <= MaxZoom)
-                {
-                    ZoomTransform.ScaleX = newZoom;
-                    ZoomTransform.ScaleY = newZoom;
+                ChangeZoom(e.Delta > 0 ? ZoomStep : -ZoomStep);
                 }
             }
         }
@@ -99,6 +96,18 @@ namespace DocumentViewer
             };
             shadow.Freeze();
             return shadow;
+        }
+
+        private void SetZoom(double zoom)
+        {
+            zoom = Math.Clamp(zoom, MinZoom, MaxZoom);
+            ZoomTransform.ScaleX = zoom;
+            ZoomTransform.ScaleY = zoom;
+        }
+
+        private void ChangeZoom(double delta)
+        {
+            SetZoom(ZoomTransform.ScaleX + delta);
         }
     }
 }
