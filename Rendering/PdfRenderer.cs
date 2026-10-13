@@ -6,7 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace DocumentViewer
+namespace DocumentViewer.Rendering
 {
     /// <summary>
     /// Provides functionality for rendering PDF pages as images.

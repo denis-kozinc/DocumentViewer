@@ -21,14 +21,12 @@ namespace DocumentViewer
         // Event handlers for zoom buttons
         private void ZoomOut_OnClick(object sender, RoutedEventArgs e)
         {
-            ZoomTransform.ScaleX = Math.Max(MinZoom, ZoomTransform.ScaleX - ZoomStep);
-            ZoomTransform.ScaleY = Math.Max(MinZoom, ZoomTransform.ScaleY - ZoomStep);
+            ChangeZoom(-ZoomStep);
         }
 
         private void ZoomIn_OnClick(object sender, RoutedEventArgs e)
         {
-            ZoomTransform.ScaleX = Math.Min(MaxZoom, ZoomTransform.ScaleX + ZoomStep);
-            ZoomTransform.ScaleY = Math.Min(MaxZoom, ZoomTransform.ScaleY + ZoomStep);
+            ChangeZoom(ZoomStep);
         }
 
         // Event handler for mouse wheel zooming
