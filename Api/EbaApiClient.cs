@@ -19,12 +19,13 @@ namespace DocumentViewer.Api
 
         public EbaApiClient(IAuthProvider authProvider)
         {
-            var handler = new HttpClientHandler();
-            // Certificate validation bypassed on purpose, some internal servers dont have valid certificates
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+            var handler = new SocketsHttpHandler
+            {
+                ConnectTimeout = TimeSpan.FromSeconds(5),
+                SslOptions = { RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true }
+            };
 
-            _httpClient = new HttpClient(handler);
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+            _httpClient = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
             _httpClient.DefaultRequestHeaders.Add("Authorization", authProvider.GetAuthHeader());
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
