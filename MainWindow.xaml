@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:DocumentViewer"
         mc:Ignorable="d"
         Title="Document Viewer" Width="1200" Height="800" 
-        WindowStartupLocation="CenterScreen" MinWidth="600" MinHeight="400">
+        WindowStartupLocation="CenterScreen" MinWidth="600" MinHeight="400"
+        PreviewKeyDown="MainWindow_OnPreviewKeyDown">
     <DockPanel>
         <Grid DockPanel.Dock ="Top" Margin="8,6">
             <Grid.ColumnDefinitions>

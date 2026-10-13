@@ -38,7 +38,6 @@ namespace DocumentViewer
             {
                 e.Handled = true;
                 ChangeZoom(e.Delta > 0 ? ZoomStep : -ZoomStep);
-                }
             }
         }
 
@@ -57,6 +56,28 @@ namespace DocumentViewer
             currentPage = Math.Max(1, Math.Min(currentPage, totalPages));
 
             CurrentPageText.Text = $"Page {currentPage} of {totalPages}";
+        }
+
+        private void MainWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                switch (e.Key)
+                {
+                    case System.Windows.Input.Key.OemPlus or System.Windows.Input.Key.Add:
+                        ChangeZoom(ZoomStep);
+                        e.Handled = true;
+                        break;
+                    case System.Windows.Input.Key.OemMinus or System.Windows.Input.Key.Subtract:
+                        ChangeZoom(-ZoomStep);
+                        e.Handled = true;
+                        break;
+                    case System.Windows.Input.Key.D0 or System.Windows.Input.Key.NumPad0:
+                        SetZoom(DefaultZoom);
+                        e.Handled = true;
+                        break;
+                }
+            }
         }
 
         private void ShowPages(IReadOnlyList<BitmapSource> pages)
