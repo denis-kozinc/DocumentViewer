@@ -141,6 +141,18 @@ namespace DocumentViewer
                 _manualKeyProvider.SelectDocument(item.Id);
             }
             UpdateNavigationButtons();
+            DocumentListPopup.IsOpen = false;
+        }
+        private void DocumentListButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            DocumentListPopup.IsOpen = true;
+        }
+        private void DocumentListPopup_OnOpened(object? sender, EventArgs e)
+        {
+            if (DocumentListBox.SelectedItem != null)
+            {
+                DocumentListBox.ScrollIntoView(DocumentListBox.SelectedItem);
+            }
         }
 
         // Shows a message over the viewer, null hides it
