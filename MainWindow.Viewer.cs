@@ -45,13 +45,23 @@ namespace DocumentViewer
             int totalPages = PagesPanel.Children.Count;
             if (totalPages == 0) return;
 
-            double scrollPosition = e.VerticalOffset;
-            double totalHeight = e.ExtentHeight;
-            if (totalHeight <= 0) return;
-
-            double singleHeight = totalHeight / totalPages;
-            int currentPage = (int)(scrollPosition / singleHeight) + 1;
-            currentPage = Math.Max(1, Math.Min(currentPage, totalPages));
+            int currentPage = 1;
+            bool atBottom = PdfScrollViewer.ScrollableHeight > 0
+                            && e.VerticalOffset >= PdfScrollViewer.ScrollableHeight;
+            if (atBottom)
+            {
+                currentPage = totalPages;
+            }
+            else
+            {
+                for (int i = 0; i < totalPages; i++)
+                {
+                    double top = PagesPanel.Children[i]
+                        .TranslatePoint(new Point(0, 0), PdfScrollViewer).Y;
+                    if (top > PdfScrollViewer.ViewportHeight / 2) break;
+                    currentPage = i + 1;
+                }
+            }
 
             CurrentPageText.Text = $"Page {currentPage} of {totalPages}";
         }
