@@ -2,7 +2,7 @@
 {
     public class ManualDocumentKeyProvider : IDocumentKeyProvider
     {
-        public event EventHandler<string> DocumentKeyChanged;
+        public event EventHandler<string>? DocumentKeyChanged;
 
         public void SelectDocument(string key)
         {

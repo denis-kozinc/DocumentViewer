@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <UserSecretsId>8b7aa67d-1d7a-4d0d-9687-5bab797b3c51</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +21,9 @@
 
   <ItemGroup>
     <PackageReference Include="Docnet.Core" Version="2.6.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.13" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.13" />
   </ItemGroup>
 
 </Project>

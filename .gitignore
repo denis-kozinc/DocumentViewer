@@ -6,7 +6,6 @@
 # User-specific files
 TestFiles/
 Properties/
-appsettings.json
 Other/
 *.rsuser
 *.suo

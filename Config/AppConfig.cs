@@ -15,6 +15,7 @@ namespace DocumentViewer.Config
             // (the auth header is built once too), so reloading would change nothing
             _config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddUserSecrets(typeof(AppConfig).Assembly, optional: true, reloadOnChange: false)
                 .Build();
         }
 
