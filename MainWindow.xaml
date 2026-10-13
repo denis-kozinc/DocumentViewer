@@ -54,9 +54,13 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed" 
-                     HorizontalAlignment="Center" VerticalAlignment="Center" 
-                       Foreground="IndianRed" FontSize="14" TextWrapping="Wrap" Margin="20"></TextBox>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed" 
+                         Foreground="IndianRed" FontSize="14" TextWrapping="Wrap" Margin="20">
+                </TextBox>
+                <Button x:Name="RetryButton" Content="Retry" Width="80" Click="RetryButton_OnClick" Visibility="Collapsed"/>
+            </StackPanel>
+            
         </Grid>
     </DockPanel>
 </Window>

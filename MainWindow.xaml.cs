@@ -3,6 +3,7 @@ using DocumentViewer.Auth;
 using DocumentViewer.Config;
 using DocumentViewer.Documents;
 using DocumentViewer.Key;
+using DocumentViewer.Rendering;
 using DocumentViewer.Search;
 using System.Net.Http;
 using System.Text.Json;
@@ -66,6 +67,7 @@ namespace DocumentViewer
             try
             {
                 ShowStatus(null);
+                RetryButton.Visibility = Visibility.Collapsed;
 
                 IReadOnlyList<string> idList;
 
@@ -104,6 +106,7 @@ namespace DocumentViewer
             catch (Exception exception)
             {
                 ShowError(exception);
+                RetryButton.Visibility = Visibility.Visible;
             }
         }
 
@@ -178,6 +181,11 @@ namespace DocumentViewer
             };
             ClearViewer();
             ShowStatus(message);
+        }
+
+        private async void RetryButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            await LoadDocumentsAsync(_filter);
         }
     }
 }
