@@ -1,4 +1,5 @@
 ﻿using DocumentViewer.Config;
+using DocumentViewer.Pipe;
 using DocumentViewer.Search;
 using System.Windows;
 
@@ -9,9 +10,24 @@ namespace DocumentViewer
     /// </summary>
     public partial class App : Application
     {
+        private CancellationTokenSource? _cancellationTokenSource;
+        private SearchPipeServer? _pipeServer;
+        private static Mutex? _mutex;
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // Ensure only one instance of the application is running
+            _mutex = new Mutex(true, @"Local\DocumentViewer", out bool isFirst);
+            if (!isFirst)
+            {
+                _mutex.Dispose();
+                _mutex = null;
+
+                bool success = SearchPipe.TrySend(e.Args);
+                Shutdown(success ? 0 : 1);
+                return;
+            }
 
             DocumentSearchFilter filter;
             try
@@ -30,7 +46,14 @@ namespace DocumentViewer
             {
                 // Fail early with a clear message, before the window starts calling the API
                 AppConfig.Validate();
+                _cancellationTokenSource = new CancellationTokenSource();
+                _pipeServer = new SearchPipeServer();
+                _pipeServer.SearchRequested += (args) =>
+                {
+                    MessageBox.Show(string.Join(" ", args));
+                };
                 new MainWindow(filter).Show();
+                _ = _pipeServer.RunAsync(_cancellationTokenSource.Token);
             }
             catch (AppConfigException exception)
             {
@@ -44,6 +67,14 @@ namespace DocumentViewer
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(1);
             }
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _cancellationTokenSource?.Cancel();
+            _mutex?.ReleaseMutex();
+            _mutex?.Dispose();
+            base.OnExit(e);
         }
     }
 
