@@ -1,5 +1,7 @@
 ﻿using DocumentViewer.Api;
 using System.Collections.Concurrent;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace DocumentViewer.Documents
 {
@@ -35,9 +37,11 @@ namespace DocumentViewer.Documents
                 {
                     newDocuments[id] = await _apiClient.GetDocumentAsync(id, token);
                 }
-                catch (EbaApiException)
+                catch (Exception e) when (e is EbaApiException or FormatException or JsonException
+                                          or HttpRequestException { StatusCode: not null })
                 {
-                    // Unknown ID or a document without PDF
+                    // The server answered with an error for this document only: skip it and load the others.
+                    // // No answer at all (connection down, timeout) is not caught here: the others would fail too, so the load stops.
                 }
             });
             _documents = newDocuments;
