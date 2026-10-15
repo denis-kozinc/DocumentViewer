@@ -26,7 +26,14 @@ namespace DocumentViewer.Pipe
                     string[]? args = JsonSerializer.Deserialize<string[]>(json);
                     if (args != null)
                     {
-                        SearchRequested?.Invoke(args);
+                        try
+                        {
+                            SearchRequested?.Invoke(args);
+                        }
+                        catch (Exception)
+                        {
+                            // A failing handler must not end the loop, or later searches would never arrive.
+                        }
                     }
                 }
                 catch (OperationCanceledException)
