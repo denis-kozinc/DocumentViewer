@@ -70,6 +70,11 @@ namespace DocumentViewer
                 ShowStatus(null);
                 RetryButton.Visibility = Visibility.Collapsed;
 
+                // Reset the document list and viewer before starting a new search
+                DocumentListBox.ItemsSource = null;
+                ClearViewer();
+                UpdateNavigationButtons();
+
                 IReadOnlyList<string> idList;
 
                 // EbaID names the exact documents, GetList does not know it, so other filters are ignored
