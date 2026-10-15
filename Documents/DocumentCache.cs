@@ -1,5 +1,6 @@
 ﻿using DocumentViewer.Api;
 using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 
@@ -38,10 +39,14 @@ namespace DocumentViewer.Documents
                     newDocuments[id] = await _apiClient.GetDocumentAsync(id, token);
                 }
                 catch (Exception e) when (e is EbaApiException or FormatException or JsonException
-                                          or HttpRequestException { StatusCode: not null })
+                                          or HttpRequestException
+                                          {
+                                              StatusCode: not null and not (HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+                                          })
                 {
                     // The server answered with an error for this document only: skip it and load the others.
-                    // // No answer at all (connection down, timeout) is not caught here: the others would fail too, so the load stops.
+                    // No answer at all (connection down, timeout) or no access (401/403) is not caught here:
+                    // the others would fail too, so the load stops.
                 }
             });
             _documents = newDocuments;

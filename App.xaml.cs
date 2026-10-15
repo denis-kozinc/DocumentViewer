@@ -52,6 +52,13 @@ namespace DocumentViewer
                 _pipeServer.SearchRequested += (args) =>
                 {
                     DocumentSearchFilter newFilter;
+
+                    if (_mainWindow?.WindowState == WindowState.Minimized)
+                    {
+                        _mainWindow.WindowState = WindowState.Normal;
+                    }
+                    _mainWindow?.Activate();
+
                     try
                     {
                         newFilter = SearchArgsParser.Parse(args);
@@ -62,11 +69,6 @@ namespace DocumentViewer
                         return;
                     }
                     _ = _mainWindow?.LoadDocumentsAsync(newFilter);
-                    if (_mainWindow?.WindowState == WindowState.Minimized)
-                    {
-                        _mainWindow.WindowState = WindowState.Normal;
-                    }
-                    _mainWindow?.Activate();
                 };
                 _mainWindow = new MainWindow(filter);
                 _mainWindow.Show();

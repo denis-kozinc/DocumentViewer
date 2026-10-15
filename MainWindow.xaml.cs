@@ -5,6 +5,7 @@ using DocumentViewer.Documents;
 using DocumentViewer.Key;
 using DocumentViewer.Rendering;
 using DocumentViewer.Search;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Windows;
@@ -105,10 +106,6 @@ namespace DocumentViewer
                 // Selecting the first item raises OnSelectionChanged, which displays the document
                 DocumentListBox.SelectedIndex = 0;
             }
-            catch (OperationCanceledException) when (ct.IsCancellationRequested)
-            {
-                // The search was cancelled, no need to show an error
-            }
             catch (Exception exception)
             {
                 if (ct.IsCancellationRequested) return; // The search was cancelled, no need to show an error
@@ -181,11 +178,15 @@ namespace DocumentViewer
             string message = exception switch
             {
                 EbaApiException => exception.Message,
+                HttpRequestException { StatusCode: HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden } =>
+                    "Access denied. Check the credentials in the configuration.",
+                HttpRequestException { StatusCode: not null } =>
+                    "The server returned an error. Try again later.",
                 HttpRequestException =>
-                    "The server is unreachable or rejected the request. Check the connection and try again.",
+                    "The server is unreachable. Check the connection and try again.",
                 TaskCanceledException => "The server is not responding. Try again.",
-                JsonException => "The server returned an unexpected response.",
-                FormatException => "The document is invalid.",
+                JsonException or FormatException or KeyNotFoundException or InvalidOperationException =>
+                    "The server returned an unexpected response.",
                 _ => "An unexpected error occurred."
             };
             ClearViewer();
