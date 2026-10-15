@@ -125,7 +125,7 @@ namespace DocumentViewer
             if (content == null)
             {
                 ClearViewer();
-                ShowStatus("Document not found.");
+                ShowStatus("The document could not be loaded.", isError: true);
                 return;
             }
 
@@ -137,9 +137,10 @@ namespace DocumentViewer
                 ShowPages(pages);
                 CurrentDocumentText.Text = content.DisplayName;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                ShowError(exception);
+                ClearViewer();
+                ShowStatus("The document could not be displayed.", isError: true);
             }
         }
 
@@ -166,10 +167,11 @@ namespace DocumentViewer
             }
         }
 
-        // Shows a message over the viewer, null hides it
-        private void ShowStatus(string? message)
+        // Shows a message over the viewer, null hides it. An error is shown in red, other messages in the default color.
+        private void ShowStatus(string? message, bool isError = false)
         {
             StatusText.Text = message ?? string.Empty;
+            StatusText.Foreground = isError ? System.Windows.Media.Brushes.IndianRed : System.Windows.SystemColors.ControlTextBrush;
             StatusText.Visibility = string.IsNullOrEmpty(message) ? Visibility.Collapsed : Visibility.Visible;
         }
 
@@ -187,7 +189,7 @@ namespace DocumentViewer
                 _ => "An unexpected error occurred."
             };
             ClearViewer();
-            ShowStatus(message);
+            ShowStatus(message, isError: true);
         }
 
         private async void RetryButton_OnClick(object sender, RoutedEventArgs e)
