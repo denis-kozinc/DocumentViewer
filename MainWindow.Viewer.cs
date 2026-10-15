@@ -15,6 +15,10 @@ namespace DocumentViewer
         private const double ZoomStep = 0.1;
         private const double DefaultZoom = 1.0;
 
+        // Space around each page, also needed to work out the fit-to-width zoom
+        private const double PageSideMargin = 24;
+        private const double PageVerticalMargin = 12;
+
         // One shared, frozen effect for all pages: frozen objects are immutable, so WPF can reuse them without tracking changes
         private static readonly DropShadowEffect PageShadow = CreatePageShadow();
 
@@ -98,7 +102,7 @@ namespace DocumentViewer
 
                 var border = new Border
                 {
-                    Margin = new Thickness(24, 12, 24, 12),
+                    Margin = new Thickness(PageSideMargin, PageVerticalMargin, PageSideMargin, PageVerticalMargin),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Effect = PageShadow,
                     Child = image,
@@ -125,6 +129,17 @@ namespace DocumentViewer
             };
             shadow.Freeze();
             return shadow;
+        }
+
+        // Zoom so the widest page fits the viewer, never above the default zoom
+        private void FitWidth(IReadOnlyList<BitmapSource> pages)
+        {
+            // The vertical scrollbar is reserved, because it only appears after the content is zoomed
+            double available = PdfScrollViewer.ActualWidth - SystemParameters.VerticalScrollBarWidth;
+            if (available <= 0) return;
+
+            double pageWidth = pages.Max(p => p.Width) + 2 * PageSideMargin;
+            SetZoom(Math.Min(DefaultZoom, available / pageWidth));
         }
 
         private void SetZoom(double zoom)

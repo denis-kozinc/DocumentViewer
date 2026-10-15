@@ -24,6 +24,8 @@ namespace DocumentViewer
         private DocumentSearchFilter _filter;
         private readonly DocumentCache _documentCache;
         private CancellationTokenSource? _searchCts;
+        // The first document shown after startup is zoomed to the window width, later documents keep the zoom
+        private bool _fitWidthPending = true;
 
         public MainWindow(DocumentSearchFilter filter)
         {
@@ -132,6 +134,11 @@ namespace DocumentViewer
                 // TODO: Add access logging here
                 var pages = PdfRenderer.RenderAllPages(content.Pdf);
                 ShowPages(pages);
+                if (_fitWidthPending)
+                {
+                    FitWidth(pages);
+                    _fitWidthPending = false;
+                }
                 CurrentDocumentText.Text = content.DisplayName;
             }
             catch (Exception)
