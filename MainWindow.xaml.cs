@@ -20,7 +20,7 @@ namespace DocumentViewer
         private readonly EbaApiClient _apiClient;
         private readonly IDocumentKeyProvider _keyProvider;
         private readonly ManualDocumentKeyProvider _manualKeyProvider = new ManualDocumentKeyProvider();
-        private readonly DocumentSearchFilter _filter;
+        private DocumentSearchFilter _filter;
         private readonly DocumentCache _documentCache;
         private CancellationTokenSource? _searchCts;
 
@@ -55,8 +55,9 @@ namespace DocumentViewer
             await LoadDocumentsAsync(_filter);
         }
 
-        private async Task LoadDocumentsAsync(DocumentSearchFilter filter)
+        public async Task LoadDocumentsAsync(DocumentSearchFilter filter)
         {
+            _filter = filter;
             // A newer search makes the previous load outdated, so it is cancelled
             _searchCts?.Cancel();
             _searchCts?.Dispose();
@@ -105,6 +106,7 @@ namespace DocumentViewer
             }
             catch (Exception exception)
             {
+                if (ct.IsCancellationRequested) return; // The search was cancelled, no need to show an error
                 ShowError(exception);
                 RetryButton.Visibility = Visibility.Visible;
             }

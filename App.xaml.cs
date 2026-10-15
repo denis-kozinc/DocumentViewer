@@ -10,6 +10,7 @@ namespace DocumentViewer
     /// </summary>
     public partial class App : Application
     {
+        private MainWindow? _mainWindow;
         private CancellationTokenSource? _cancellationTokenSource;
         private SearchPipeServer? _pipeServer;
         private static Mutex? _mutex;
@@ -50,9 +51,25 @@ namespace DocumentViewer
                 _pipeServer = new SearchPipeServer();
                 _pipeServer.SearchRequested += (args) =>
                 {
-                    MessageBox.Show(string.Join(" ", args));
+                    DocumentSearchFilter newFilter;
+                    try
+                    {
+                        newFilter = SearchArgsParser.Parse(args);
+                    }
+                    catch (ArgumentException exception)
+                    {
+                        MessageBox.Show(exception.Message, "Invalid arguments", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    _ = _mainWindow?.LoadDocumentsAsync(newFilter);
+                    if (_mainWindow?.WindowState == WindowState.Minimized)
+                    {
+                        _mainWindow.WindowState = WindowState.Normal;
+                    }
+                    _mainWindow?.Activate();
                 };
-                new MainWindow(filter).Show();
+                _mainWindow = new MainWindow(filter);
+                _mainWindow.Show();
                 _ = _pipeServer.RunAsync(_cancellationTokenSource.Token);
             }
             catch (AppConfigException exception)
