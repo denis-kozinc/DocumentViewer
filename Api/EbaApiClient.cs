@@ -16,6 +16,7 @@ namespace DocumentViewer.Api
         private readonly HttpClient _httpClient;
         private const string DateFormat = "yyyy-MM-dd";
         private const int SuccessCode = 200;
+        private const string NoDocumentFoundText = "NO_DOCUMENT_FOUND";
 
         public EbaApiClient(IAuthProvider authProvider)
         {
@@ -44,6 +45,10 @@ namespace DocumentViewer.Api
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
                 JsonElement result = doc.RootElement.GetProperty("Result");
+                if (IsNoDocumentFound(result))
+                {
+                    return idList; // Return an empty list when no documents are found
+                }
                 EnsureListSuccess(result);
 
                 foreach (var element in result.GetProperty("docs").EnumerateArray())
@@ -144,6 +149,14 @@ namespace DocumentViewer.Api
                 return;
 
             pairs.Add($"{name}={Uri.EscapeDataString(value)}");
+        }
+
+        // True when the server answers that nothing matches the search
+        private static bool IsNoDocumentFound(JsonElement result)
+        {
+            return result.TryGetProperty("errorText", out JsonElement text)
+                   && text.ValueKind == JsonValueKind.String
+                   && string.Equals(text.GetString(), NoDocumentFoundText, StringComparison.Ordinal);
         }
     }
 }
