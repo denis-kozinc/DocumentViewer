@@ -14,6 +14,9 @@ namespace DocumentViewer
         private CancellationTokenSource? _cancellationTokenSource;
         private SearchPipeServer? _pipeServer;
         private static Mutex? _mutex;
+        // Appended to errors a user cannot fix, such as a wrong argument or a missing setting
+        private const string ContactHint = "\n\nContact your administrator.";
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -37,7 +40,7 @@ namespace DocumentViewer
             }
             catch (ArgumentException exception)
             {
-                MessageBox.Show(exception.Message, "Invalid arguments", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(exception.Message + ContactHint, "Invalid arguments", MessageBoxButton.OK, MessageBoxImage.Error);
                 // Non-zero exit code, so the caller (Pantheon) can tell the start failed
                 Shutdown(1);
                 return;
@@ -65,7 +68,7 @@ namespace DocumentViewer
                     }
                     catch (ArgumentException exception)
                     {
-                        MessageBox.Show(exception.Message, "Invalid arguments", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(exception.Message + ContactHint, "Invalid arguments", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
                     _ = _mainWindow?.LoadDocumentsAsync(newFilter);
@@ -77,7 +80,7 @@ namespace DocumentViewer
             catch (AppConfigException exception)
             {
                 // The message names the setting but never its value, so it is safe to show
-                MessageBox.Show(exception.Message, "Invalid configuration", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(exception.Message + ContactHint, "Invalid configuration", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(1);
             }
             catch (Exception)

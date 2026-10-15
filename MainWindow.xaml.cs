@@ -177,7 +177,7 @@ namespace DocumentViewer
             // Only the server error message is shown to the user, other messages could contain sensitive information
             string message = exception switch
             {
-                EbaApiException => exception.Message,
+                EbaApiException => $"The server reported: {exception.Message}",
                 HttpRequestException { StatusCode: HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden } =>
                     "Access denied. Check the credentials in the configuration.",
                 HttpRequestException { StatusCode: not null } =>

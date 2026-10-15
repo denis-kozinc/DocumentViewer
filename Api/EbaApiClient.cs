@@ -116,7 +116,7 @@ namespace DocumentViewer.Api
                 return;
 
             // errorText is null on success, so the kind is checked before reading it as a string
-            string message = "The server reported an error.";
+            string message = "Unknown error.";
             if (result.TryGetProperty("errorText", out JsonElement text) && text.ValueKind == JsonValueKind.String)
             {
                 message = text.GetString()!;
