@@ -27,6 +27,7 @@ namespace DocumentViewer
             NextButton.IsEnabled = index >= 0 && index < DocumentListBox.Items.Count - 1;
             FirstButton.IsEnabled = index > 0;
             LastButton.IsEnabled = index >= 0 && index < DocumentListBox.Items.Count - 1;
+            DocumentListButton.IsEnabled = DocumentListBox.Items.Count > 1;
         }
 
         private void FirstButton_OnClick(object sender, RoutedEventArgs e)

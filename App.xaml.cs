@@ -17,7 +17,7 @@ namespace DocumentViewer
         // Appended to errors a user cannot fix, such as a wrong argument or a missing setting
         private const string ContactHint = "\n\nContact your administrator.";
         // The accent colour of the UI (selected item, primary buttons), matched to Pantheon
-        private static readonly System.Windows.Media.Color AccentColor = System.Windows.Media.Color.FromRgb(0xC8, 0x96, 0x2E);
+        private static readonly System.Windows.Media.Color AccentColor = System.Windows.Media.Color.FromRgb(0xB4, 0x85, 0x2D);
 
         protected override void OnStartup(StartupEventArgs e)
         {

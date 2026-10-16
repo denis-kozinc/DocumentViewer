@@ -43,7 +43,7 @@
                                    Margin="8,0" TextTrimming="CharacterEllipsis" 
                                    ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
                         <ui:Button x:Name="DocumentListButton" Grid.Column="1" Icon="{ui:SymbolIcon MoreHorizontal24}" Appearance="Transparent"
-                                   ToolTip="Select document" Click="DocumentListButton_OnClick" Margin="0,0,1,0"/>
+                                   ToolTip="Select document" Click="DocumentListButton_OnClick" Margin="0,0,1,0" IsEnabled="False"/>
                     </Grid>
                 </Border>
 
@@ -58,8 +58,15 @@
                     <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}"
                             BorderThickness="1" CornerRadius="4" Padding="2"
                             Width="{Binding ActualWidth, ElementName=DocumentBox}">
-                        <ui:ListView x:Name="DocumentListBox" MaxHeight="300"
-                                     SelectionChanged="DocumentListBox_OnSelectionChanged" DisplayMemberPath="Label"/>
+                        <ui:ListView x:Name="DocumentListBox" MaxHeight="300" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                     SelectionChanged="DocumentListBox_OnSelectionChanged">
+                            <ui:ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Label}"/>
+                                </DataTemplate>
+                            </ui:ListView.ItemTemplate>
+                        </ui:ListView>
+
                     </Border>
                 </Popup>
 
