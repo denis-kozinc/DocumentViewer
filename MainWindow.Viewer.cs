@@ -15,6 +15,8 @@ namespace DocumentViewer
         private const double ZoomStep = 0.1;
         private const double DefaultZoom = 1.0;
 
+        private const string AppTitle = "Document Viewer";
+
         // Space around each page, also needed to work out the fit-to-width zoom
         private const double PageSideMargin = 24;
         private const double PageVerticalMargin = 12;
@@ -114,6 +116,7 @@ namespace DocumentViewer
         private void ClearViewer()
         {
             PagesPanel.Children.Clear();
+            Title = AppTitle;
             CurrentDocumentText.Text = string.Empty;
             CurrentPageText.Text = string.Empty;
         }
@@ -122,9 +125,9 @@ namespace DocumentViewer
         {
             var shadow = new DropShadowEffect
             {
-                BlurRadius = 12,
-                ShadowDepth = 2,
-                Opacity = 0.4,
+                BlurRadius = 16,
+                ShadowDepth = 1,
+                Opacity = 0.25,
                 Color = Colors.Black,
             };
             shadow.Freeze();

@@ -140,6 +140,7 @@ namespace DocumentViewer
                     _fitWidthPending = false;
                 }
                 CurrentDocumentText.Text = content.DisplayName;
+                Title = $"{content.DisplayName} - {AppTitle}";
             }
             catch (Exception)
             {

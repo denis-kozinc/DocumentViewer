@@ -10,7 +10,9 @@
         PreviewKeyDown="MainWindow_OnPreviewKeyDown"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     <DockPanel>
-        <Grid DockPanel.Dock ="Top" Margin="8,6">
+        <Border DockPanel.Dock="Top" Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1">
+        <Grid Margin="8,6" TextElement.FontSize="13">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -20,7 +22,7 @@
             <StackPanel Grid.Column="0" Orientation="Horizontal" >
                 <ui:Button Icon="{ui:SymbolIcon ZoomOut24}" Appearance="Transparent" Click="ZoomOut_OnClick" ToolTip="Zoom out (Ctrl + -)"/>
                 <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
-                           TextAlignment="Center" VerticalAlignment="Center" Margin="10,0"/>
+                           TextAlignment="Center" VerticalAlignment="Center" MinWidth="48" Margin="8,0"/>
                 <ui:Button Icon="{ui:SymbolIcon ZoomIn24}" Appearance="Transparent" Click="ZoomIn_OnClick" ToolTip="Zoom in (Ctrl + +)"/>
             </StackPanel>
 
@@ -64,8 +66,9 @@
             </StackPanel>
 
             <TextBlock Grid.Column="2" x:Name="CurrentPageText"  VerticalAlignment="Center" 
-                       HorizontalAlignment="Right" Margin="10,0"/>
+                       HorizontalAlignment="Right" Margin="8,0"/>
         </Grid>
+        </Border>
 
         <Grid>
             <ScrollViewer x:Name="PdfScrollViewer" ScrollChanged="PdfScrollViewer_OnScrollChanged"

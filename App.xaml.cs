@@ -16,10 +16,13 @@ namespace DocumentViewer
         private static Mutex? _mutex;
         // Appended to errors a user cannot fix, such as a wrong argument or a missing setting
         private const string ContactHint = "\n\nContact your administrator.";
+        // The accent colour of the UI (selected item, primary buttons), matched to Pantheon
+        private static readonly System.Windows.Media.Color AccentColor = System.Windows.Media.Color.FromRgb(0xC8, 0x96, 0x2E);
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Wpf.Ui.Appearance.ApplicationAccentColorManager.Apply(AccentColor, Wpf.Ui.Appearance.ApplicationTheme.Light);
 
             // Ensure only one instance of the application is running
             _mutex = new Mutex(true, @"Local\DocumentViewer", out bool isFirst);
