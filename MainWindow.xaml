@@ -3,12 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DocumentViewer"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         mc:Ignorable="d"
-        Title="Document Viewer" Width="1200" Height="800" 
+        Title="Document Viewer" Width="1200" Height="800"
         WindowStartupLocation="CenterScreen" MinWidth="600" MinHeight="400"
-        PreviewKeyDown="MainWindow_OnPreviewKeyDown"
-        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+        PreviewKeyDown="MainWindow_OnPreviewKeyDown">
     <DockPanel>
         <Border DockPanel.Dock="Top" Background="{DynamicResource SurfaceBrush}"
                 BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1">
@@ -39,11 +38,6 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <!--
-                        <TextBlock x:Name="CurrentDocumentText" Grid.Column="0" VerticalAlignment="Center" 
-                                   Margin="8,0" TextTrimming="CharacterEllipsis" 
-                                   ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
-                        -->
                         <TextBox x:Name="CurrentDocumentText" Grid.Column="0" VerticalAlignment="Center" 
                                  Margin="8,0" IsReadOnly="True" BorderThickness="0" Background="Transparent"
                                  Padding="0" Style="{x:Null}"
@@ -62,7 +56,7 @@
                        Placement="Bottom" StaysOpen="False" IsOpen="False" AllowsTransparency="True"
                        Opened="DocumentListPopup_OnOpened">
                     <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}"
-                            BorderThickness="1" CornerRadius="4" Padding="2"
+                            BorderThickness="1" CornerRadius="4" Padding="2" TextElement.FontSize="13"
                             Width="{Binding ActualWidth, ElementName=DocumentBox}">
                         <ui:ListView x:Name="DocumentListBox" MaxHeight="300" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                                      SelectionChanged="DocumentListBox_OnSelectionChanged">
