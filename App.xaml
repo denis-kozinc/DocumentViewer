@@ -11,7 +11,7 @@
             <SolidColorBrush x:Key="ViewerBackgroundBrush" Color="#E5E5E5"/>
             <SolidColorBrush x:Key="LineBrush" Color="LightGray"/>
             <SolidColorBrush x:Key="SurfaceBrush" Color="White"/>
-            <SolidColorBrush x:Key="ErrorBrush" Color="Red"/>
+            <SolidColorBrush x:Key="ErrorBrush" Color="IndianRed"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
