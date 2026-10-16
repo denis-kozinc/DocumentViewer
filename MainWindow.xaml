@@ -97,11 +97,14 @@
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <ui:ProgressRing x:Name="LoadingRing" IsIndeterminate="True" Width="32" Height="32" 
                                  HorizontalAlignment="Center" Visibility="Collapsed" Margin="0,0,0,8"/>
-                <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed" 
-                         BorderThickness="0" FontSize="14" TextWrapping="Wrap" Margin="20">
+                <ui:SymbolIcon x:Name="StatusIcon" FontSize="40" HorizontalAlignment="Center"
+                               Margin="0,0,0,8" Visibility="Collapsed"/>
+                <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed"
+                         BorderThickness="0" Style="{x:Null}" FontSize="14" TextWrapping="Wrap" TextAlignment="Center"
+                         MaxWidth="480" Margin="20,0">
                 </TextBox>
                 <ui:Button x:Name="RetryButton" Content="Retry" Appearance="Secondary" HorizontalAlignment="Center"
-                           Click="RetryButton_OnClick" Visibility="Collapsed"/>
+                           Margin="0,8,0,0" Click="RetryButton_OnClick" Visibility="Collapsed"/>
             </StackPanel>
             
         </Grid>

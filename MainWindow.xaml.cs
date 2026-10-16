@@ -175,9 +175,17 @@ namespace DocumentViewer
         // Shows a message over the viewer, null hides it. An error is shown in red, other messages in the default color.
         private void ShowStatus(string? message, bool isError = false, bool isBusy = false)
         {
+            bool hasMessage = !string.IsNullOrEmpty(message);
+            var brush = isError ? (System.Windows.Media.Brush)FindResource("ErrorBrush") : System.Windows.SystemColors.ControlTextBrush;
+
             StatusText.Text = message ?? string.Empty;
-            StatusText.Foreground = isError ? (System.Windows.Media.Brush)FindResource("ErrorBrush") : System.Windows.SystemColors.ControlTextBrush;
-            StatusText.Visibility = string.IsNullOrEmpty(message) ? Visibility.Collapsed : Visibility.Visible;
+            StatusText.Foreground = brush;
+            StatusText.Visibility = hasMessage ? Visibility.Visible : Visibility.Collapsed;
+
+            // The icon is hidden while busy, the progress ring takes its place
+            StatusIcon.Symbol = isError ? Wpf.Ui.Controls.SymbolRegular.ErrorCircle24 : Wpf.Ui.Controls.SymbolRegular.Info24;
+            StatusIcon.Foreground = brush;
+            StatusIcon.Visibility = hasMessage && !isBusy ? Visibility.Visible : Visibility.Collapsed;
             LoadingRing.Visibility = isBusy ? Visibility.Visible : Visibility.Collapsed;
         }
 
