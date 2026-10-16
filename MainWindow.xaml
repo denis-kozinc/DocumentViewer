@@ -88,18 +88,26 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <ui:ProgressRing x:Name="LoadingRing" IsIndeterminate="True" Width="32" Height="32" 
-                                 HorizontalAlignment="Center" Visibility="Collapsed" Margin="0,0,0,8"/>
-                <ui:SymbolIcon x:Name="StatusIcon" FontSize="40" HorizontalAlignment="Center"
-                               Margin="0,0,0,8" Visibility="Collapsed"/>
-                <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed"
-                         BorderThickness="0" Style="{x:Null}" FontSize="14" TextWrapping="Wrap" TextAlignment="Center"
-                         MaxWidth="480" Margin="20,0">
-                </TextBox>
-                <ui:Button x:Name="RetryButton" Content="Retry" Appearance="Secondary" HorizontalAlignment="Center"
-                           Margin="0,8,0,0" Click="RetryButton_OnClick" Visibility="Collapsed"/>
-            </StackPanel>
+            <Border x:Name="StatusCard" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    MaxWidth="480" Padding="32,24" Visibility="Collapsed"
+                    Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}"
+                    BorderThickness="1" CornerRadius="8">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="1" Opacity="0.2" Color="Black"/>
+                </Border.Effect>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ui:ProgressRing x:Name="LoadingRing" IsIndeterminate="True" Width="32" Height="32" 
+                                     HorizontalAlignment="Center" Visibility="Collapsed" Margin="0,0,0,8"/>
+                    <ui:SymbolIcon x:Name="StatusIcon" FontSize="40" HorizontalAlignment="Center"
+                                   Margin="0,0,0,8" Visibility="Collapsed"/>
+                    <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed"
+                             BorderThickness="0" Style="{x:Null}" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"
+                             MaxWidth="480" Margin="20,0">
+                    </TextBox>
+                    <ui:Button x:Name="RetryButton" Content="Retry" Appearance="Secondary" HorizontalAlignment="Center"
+                               Margin="0,8,0,0" Click="RetryButton_OnClick" Visibility="Collapsed"/>
+                </StackPanel>
+            </Border>
             
         </Grid>
     </DockPanel>

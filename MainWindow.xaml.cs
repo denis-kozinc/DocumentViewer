@@ -187,6 +187,8 @@ namespace DocumentViewer
             StatusIcon.Foreground = brush;
             StatusIcon.Visibility = hasMessage && !isBusy ? Visibility.Visible : Visibility.Collapsed;
             LoadingRing.Visibility = isBusy ? Visibility.Visible : Visibility.Collapsed;
+
+            StatusCard.Visibility = hasMessage || isBusy ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ShowError(Exception exception)
