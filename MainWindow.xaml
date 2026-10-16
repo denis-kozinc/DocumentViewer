@@ -20,8 +20,10 @@
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" >
                 <ui:Button Icon="{ui:SymbolIcon ZoomOut24}" Appearance="Transparent" Click="ZoomOut_OnClick" ToolTip="Zoom out (Ctrl + -)"/>
-                <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
-                           TextAlignment="Center" VerticalAlignment="Center" MinWidth="48" Margin="8,0"/>
+                <Border Style="{StaticResource ChipBorder}" MinWidth="56" Margin="8,0">
+                    <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
+                               TextAlignment="Center"/>
+                </Border>
                 <ui:Button Icon="{ui:SymbolIcon ZoomIn24}" Appearance="Transparent" Click="ZoomIn_OnClick" ToolTip="Zoom in (Ctrl + +)"/>
             </StackPanel>
 
@@ -72,9 +74,19 @@
 
             </StackPanel>
 
-            <TextBlock Grid.Column="2" x:Name="CurrentPageText"  VerticalAlignment="Center" 
-                       HorizontalAlignment="Right" Margin="8,0"/>
-        </Grid>
+            <Border Grid.Column="2" HorizontalAlignment="Right" Margin="8,0">
+                <Border.Style>
+                    <Style TargetType="Border" BasedOn="{StaticResource ChipBorder}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=CurrentPageText}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock x:Name="CurrentPageText"/>
+            </Border>
+            </Grid>
         </Border>
 
         <Grid>
