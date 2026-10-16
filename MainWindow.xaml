@@ -7,7 +7,8 @@
         mc:Ignorable="d"
         Title="Document Viewer" Width="1200" Height="800" 
         WindowStartupLocation="CenterScreen" MinWidth="600" MinHeight="400"
-        PreviewKeyDown="MainWindow_OnPreviewKeyDown">
+        PreviewKeyDown="MainWindow_OnPreviewKeyDown"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     <DockPanel>
         <Grid DockPanel.Dock ="Top" Margin="8,6">
             <Grid.ColumnDefinitions>
@@ -16,21 +17,21 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal" >
-                <Button Content="-" Click="ZoomOut_OnClick" Width="30"/>
+                <ui:Button Icon="{ui:SymbolIcon ZoomOut24}" Appearance="Transparent" Click="ZoomOut_OnClick" ToolTip="Zoom out (Ctrl + -)"/>
                 <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
                            TextAlignment="Center" VerticalAlignment="Center" Margin="10,0"/>
-                <Button Content="+" Click="ZoomIn_OnClick" Width="30"/>
+                <ui:Button Icon="{ui:SymbolIcon ZoomIn24}" Appearance="Transparent" Click="ZoomIn_OnClick" ToolTip="Zoom in (Ctrl + +)"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="PreviousButton" Content="&lt;" Width="30" Focusable="False" ToolTip="Previous document"
-                        Click="PreviousButton_OnClick" IsEnabled="False"/>
+                <ui:Button x:Name="PreviousButton" Icon="{ui:SymbolIcon ChevronLeft24}" Appearance="Transparent" Focusable="False" 
+                           ToolTip="Previous document" Click="PreviousButton_OnClick" IsEnabled="False"/>
                 <TextBlock x:Name="CurrentDocumentText" VerticalAlignment="Center" Margin="10,0" 
                            Width="150" TextTrimming="CharacterEllipsis" TextAlignment="Center"
                            ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
-                <Button x:Name="NextButton" Content="&gt;" Width="30" Focusable="False" ToolTip="Next document"
-                        Click="NextButton_OnClick" IsEnabled="False"/>
-                <Button x:Name="DocumentListButton" Content="..." Width="30" ToolTip="Select document"
-                        Click="DocumentListButton_OnClick"/>
+                <ui:Button x:Name="NextButton" Icon="{ui:SymbolIcon ChevronRight24}" Appearance="Transparent" Focusable="False" 
+                           ToolTip="Next document" Click="NextButton_OnClick" IsEnabled="False"/>
+                <ui:Button x:Name="DocumentListButton" Icon="{ui:SymbolIcon List24}" Appearance="Transparent"
+                           ToolTip="Select document" Click="DocumentListButton_OnClick"/>
                 <Popup x:Name="DocumentListPopup" PlacementTarget="{Binding ElementName=DocumentListButton}" 
                        Placement="Bottom" StaysOpen="False" IsOpen="False" Opened="DocumentListPopup_OnOpened">
                     <Border Background="White" BorderBrush="Gray" BorderThickness="1">
