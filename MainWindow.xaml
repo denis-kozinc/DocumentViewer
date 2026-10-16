@@ -86,7 +86,7 @@
                 </Border.Style>
                 <TextBlock x:Name="CurrentPageText"/>
             </Border>
-            </Grid>
+        </Grid>
         </Border>
 
         <Grid>
