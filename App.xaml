@@ -9,6 +9,9 @@
                 <ui:ControlsDictionary/>
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="ViewerBackgroundBrush" Color="#E5E5E5"/>
+            <SolidColorBrush x:Key="LineBrush" Color="LightGray"/>
+            <SolidColorBrush x:Key="SurfaceBrush" Color="White"/>
+            <SolidColorBrush x:Key="ErrorBrush" Color="Red"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

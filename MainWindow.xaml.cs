@@ -175,7 +175,7 @@ namespace DocumentViewer
         private void ShowStatus(string? message, bool isError = false)
         {
             StatusText.Text = message ?? string.Empty;
-            StatusText.Foreground = isError ? System.Windows.Media.Brushes.IndianRed : System.Windows.SystemColors.ControlTextBrush;
+            StatusText.Foreground = isError ? (System.Windows.Media.Brush)FindResource("ErrorBrush") : System.Windows.SystemColors.ControlTextBrush;
             StatusText.Visibility = string.IsNullOrEmpty(message) ? Visibility.Collapsed : Visibility.Visible;
         }
 

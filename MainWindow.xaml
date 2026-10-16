@@ -30,7 +30,7 @@
                 <ui:Button x:Name="PreviousButton" Icon="{ui:SymbolIcon ChevronLeft24}" Appearance="Transparent" Focusable="False" 
                            ToolTip="Previous document" Click="PreviousButton_OnClick" IsEnabled="False"/>
 
-                <Border x:Name="DocumentBox" Width="220" Height="32" Margin="4,0" BorderBrush="Gray"
+                <Border x:Name="DocumentBox" Width="220" Height="32" Margin="4,0" BorderBrush="{DynamicResource LineBrush}"
                         BorderThickness="1" CornerRadius="4">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -52,7 +52,7 @@
                 
                 <Popup x:Name="DocumentListPopup" PlacementTarget="{Binding ElementName=DocumentBox}" 
                        Placement="Bottom" StaysOpen="False" IsOpen="False" Opened="DocumentListPopup_OnOpened">
-                    <Border Background="White" BorderBrush="Gray" BorderThickness="1">
+                    <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1">
                         <ListBox x:Name="DocumentListBox" Width="220" MaxHeight="300"
                                  SelectionChanged="DocumentListBox_OnSelectionChanged" DisplayMemberPath="Label"/>
                     </Border>
@@ -77,9 +77,10 @@
 
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed" 
-                         FontSize="14" TextWrapping="Wrap" Margin="20">
+                         BorderThickness="0" FontSize="14" TextWrapping="Wrap" Margin="20">
                 </TextBox>
-                <Button x:Name="RetryButton" Content="Retry" Width="80" Click="RetryButton_OnClick" Visibility="Collapsed"/>
+                <ui:Button x:Name="RetryButton" Content="Retry" Appearance="Secondary" HorizontalAlignment="Center"
+                           Click="RetryButton_OnClick" Visibility="Collapsed"/>
             </StackPanel>
             
         </Grid>
