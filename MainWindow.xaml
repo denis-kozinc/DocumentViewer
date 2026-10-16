@@ -50,11 +50,14 @@
                 <ui:Button x:Name="LastButton" Icon="{ui:SymbolIcon Next24}" Appearance="Transparent" Focusable="False" 
                            ToolTip="Last document" Click="LastButton_OnClick" IsEnabled="False"/>
                 
-                <Popup x:Name="DocumentListPopup" PlacementTarget="{Binding ElementName=DocumentBox}" 
-                       Placement="Bottom" StaysOpen="False" IsOpen="False" Opened="DocumentListPopup_OnOpened">
-                    <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1">
-                        <ListBox x:Name="DocumentListBox" Width="220" MaxHeight="300"
-                                 SelectionChanged="DocumentListBox_OnSelectionChanged" DisplayMemberPath="Label"/>
+                <Popup x:Name="DocumentListPopup" PlacementTarget="{Binding ElementName=DocumentBox}"
+                       Placement="Bottom" StaysOpen="False" IsOpen="False" AllowsTransparency="True"
+                       Opened="DocumentListPopup_OnOpened">
+                    <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}"
+                            BorderThickness="1" CornerRadius="4" Padding="2"
+                            Width="{Binding ActualWidth, ElementName=DocumentBox}">
+                        <ui:ListView x:Name="DocumentListBox" MaxHeight="300"
+                                     SelectionChanged="DocumentListBox_OnSelectionChanged" DisplayMemberPath="Label"/>
                     </Border>
                 </Popup>
 
