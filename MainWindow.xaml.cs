@@ -100,7 +100,9 @@ namespace DocumentViewer
                 ct.ThrowIfCancellationRequested();
                 ShowStatus(null);
 
+                // Newest first, documents without a date go last, equal dates keep the server order
                 var items = idList
+                    .OrderByDescending(id => _documentCache.Get(id)?.CreationDate ?? DateTime.MinValue)
                     .Select(id => new DocumentListItem(id, _documentCache.Get(id)?.DisplayName ?? id))
                     .ToList();
 

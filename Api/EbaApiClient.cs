@@ -91,6 +91,7 @@ namespace DocumentViewer.Api
                 documentId,
                 ReadString(data, "INV_DOC_NUM"),
                 ReadString(root, "ExternId"),
+                ReadDate(root, "CreationDate"),
                 Convert.FromBase64String(pdfBase64)
             );
         }
@@ -106,6 +107,15 @@ namespace DocumentViewer.Api
                 return trimmed.Length > 0 ? trimmed : null;
             }
             return null;
+        }
+
+        // Returns the date of a string field of the given object, or null when it is missing or not a valid date
+        private static DateTime? ReadDate(JsonElement parent, string name)
+        {
+            string? text = ReadString(parent, name);
+            return DateTime.TryParse(text, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date)
+                ? date
+                : null;
         }
 
         // Throws when the server reports an error in the body, because it answers with 200 OK even for some errors
