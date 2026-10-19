@@ -2,7 +2,6 @@
 using DocumentViewer.Auth;
 using DocumentViewer.Config;
 using DocumentViewer.Documents;
-using DocumentViewer.Key;
 using DocumentViewer.Rendering;
 using DocumentViewer.Search;
 using System.Net;
@@ -19,8 +18,6 @@ namespace DocumentViewer
     public partial class MainWindow : Window
     {
         private readonly EbaApiClient _apiClient;
-        private readonly IDocumentKeyProvider _keyProvider;
-        private readonly ManualDocumentKeyProvider _manualKeyProvider = new ManualDocumentKeyProvider();
         private DocumentSearchFilter _filter;
         private readonly DocumentCache _documentCache;
         private CancellationTokenSource? _searchCts;
@@ -41,14 +38,6 @@ namespace DocumentViewer
 
             _apiClient = new EbaApiClient(authProvider);
             _documentCache = new DocumentCache(_apiClient);
-
-            _keyProvider = _manualKeyProvider;
-            // Subscribe to the DocumentKeyChanged event to update the displayed document when a new key is selected
-            _keyProvider.DocumentKeyChanged += (sender, key) =>
-            {
-                DisplayDocument(key);
-                PdfScrollViewer.ScrollToTop();
-            };
 
             Loaded += MainWindow_Loaded;
             Closed += (sender, e) => { _searchCts?.Cancel(); _searchCts?.Dispose(); };
@@ -138,7 +127,6 @@ namespace DocumentViewer
             try
             {
                 ShowStatus(null);
-                // TODO: Add access logging here
                 var pages = PdfRenderer.RenderAllPages(content.Pdf);
                 ShowPages(pages);
                 if (_fitWidthPending)
@@ -161,7 +149,8 @@ namespace DocumentViewer
         {
             if (DocumentListBox.SelectedItem is DocumentListItem item)
             {
-                _manualKeyProvider.SelectDocument(item.Id);
+                DisplayDocument(item.Id);
+                PdfScrollViewer.ScrollToTop();
             }
             UpdateNavigationButtons();
             DocumentListPopup.IsOpen = false;
