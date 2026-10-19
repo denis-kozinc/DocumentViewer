@@ -26,6 +26,8 @@ namespace DocumentViewer
         private CancellationTokenSource? _searchCts;
         // The first document shown after startup is zoomed to the window width, later documents keep the zoom
         private bool _fitWidthPending = true;
+        // Free filters can match a lot of documents, only this many of the newest are loaded
+        private const int MaxDocuments = 100;
 
         public MainWindow(DocumentSearchFilter filter)
         {
@@ -94,7 +96,9 @@ namespace DocumentViewer
                     return;
                 }
 
-                ShowStatus("Loading documents...", isBusy: true);
+                ShowStatus(idList.Count > MaxDocuments
+                    ? $"Loading {idList.Count} documents (showing the {MaxDocuments} newest)..."
+                    : "Loading documents...", isBusy: true);
                 await _documentCache.LoadAllAsync(idList, ct);
                 // The search may have been replaced while this continuation was waiting to run
                 ct.ThrowIfCancellationRequested();
@@ -103,6 +107,7 @@ namespace DocumentViewer
                 // Newest first, documents without a date go last, equal dates keep the server order
                 var items = idList
                     .OrderByDescending(id => _documentCache.Get(id)?.CreationDate ?? DateTime.MinValue)
+                    .Take(MaxDocuments)
                     .Select(id => new DocumentListItem(id, _documentCache.Get(id)?.DisplayName ?? id))
                     .ToList();
 

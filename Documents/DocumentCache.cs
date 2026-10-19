@@ -14,7 +14,6 @@ namespace DocumentViewer.Documents
         private readonly EbaApiClient _apiClient;
         private ConcurrentDictionary<string, DocumentContent> _documents = new();
         private const int MaxParallelRequests = 4;
-
         public DocumentCache(EbaApiClient apiClient)
         {
             _apiClient = apiClient;
@@ -38,11 +37,7 @@ namespace DocumentViewer.Documents
                 {
                     newDocuments[id] = await _apiClient.GetDocumentAsync(id, token);
                 }
-                catch (Exception e) when (e is EbaApiException or FormatException or JsonException
-                                          or HttpRequestException
-                                          {
-                                              StatusCode: not null and not (HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
-                                          })
+                catch (Exception e) when (IsSingleDocumentError(e))
                 {
                     // The server answered with an error for this document only: skip it and load the others.
                     // No answer at all (connection down, timeout) or no access (401/403) is not caught here:
@@ -51,6 +46,14 @@ namespace DocumentViewer.Documents
             });
             _documents = newDocuments;
         }
+
+        // True when the failure concerns only the requested document, so the other documents can still be loaded
+        private static bool IsSingleDocumentError(Exception e) =>
+            e is EbaApiException or FormatException or JsonException
+                or HttpRequestException
+            {
+                StatusCode: not null and not (HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+            };
 
         public DocumentContent? Get(string id) => _documents.GetValueOrDefault(id);
     }
