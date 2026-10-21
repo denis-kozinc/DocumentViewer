@@ -23,7 +23,8 @@ namespace DocumentViewer
         private CancellationTokenSource? _searchCts;
         // The first document shown after startup is zoomed to the window width, later documents keep the zoom
         private bool _fitWidthPending = true;
-        // Free filters can match a lot of documents, only this many of the newest are loaded
+        // Free filters can match a lot of documents. All of them are loaded, because the creation date is only known
+        // after the PDF is fetched and the GetList order is not guaranteed, but only this many of the newest are shown
         private const int MaxDocuments = 100;
 
         public MainWindow(DocumentSearchFilter filter)

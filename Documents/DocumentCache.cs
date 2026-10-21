@@ -19,7 +19,7 @@ namespace DocumentViewer.Documents
             _apiClient = apiClient;
         }
 
-        // Load all documents
+        // Load all documents, not just the ones shown: the date used to pick the newest is only known after the fetch
         public async Task LoadAllAsync(IReadOnlyList<string> ids, CancellationToken ct)
         {
             _documents = new();
