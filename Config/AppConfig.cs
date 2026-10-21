@@ -47,12 +47,12 @@ namespace DocumentViewer.Config
             bool endpointIsHttps = Uri.TryCreate(EBA_ENDPOINT, UriKind.Absolute, out Uri? endpoint)
                                    && endpoint.Scheme == Uri.UriSchemeHttps;
             if (!endpointIsHttps)
-                throw new AppConfigException("EBA_ENDPOINT must be set to an https:// address.");
+                throw new AppConfigException("The endpoint is missing or is not an https:// address.");
 
             bool hasToken = !string.IsNullOrEmpty(API_TOKEN);
             bool hasPassword = !string.IsNullOrEmpty(USER) && !string.IsNullOrEmpty(PASS);
             if (!hasToken && !hasPassword)
-                throw new AppConfigException("Set API_TOKEN, or both USER and PASS.");
+                throw new AppConfigException("The access token is missing.");
         }
 
         private static string Read(string key) => (_config[key] ?? string.Empty).Trim();

@@ -85,12 +85,12 @@ namespace DocumentViewer
             catch (AppConfigException exception)
             {
                 // The message names the setting but never its value, so it is safe to show
-                MessageBox.Show(exception.Message + ContactHint, "Invalid configuration", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(exception.Message + ContactHint, "Invalid connection data", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(1);
             }
             catch (Exception)
             {
-                MessageBox.Show("The application could not be started. Check the configuration.",
+                MessageBox.Show("The application could not be started.",
                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(1);
             }

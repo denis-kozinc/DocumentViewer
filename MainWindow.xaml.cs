@@ -197,7 +197,7 @@ namespace DocumentViewer
             {
                 EbaApiException => $"The server reported: {exception.Message}",
                 HttpRequestException { StatusCode: HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden } =>
-                    "Access denied. Check the credentials in the configuration.",
+                    "Access denied. The access token is not valid.",
                 HttpRequestException { StatusCode: not null } =>
                     "The server returned an error. Try again later.",
                 HttpRequestException =>
