@@ -13,7 +13,7 @@ using System.Windows.Controls;
 namespace DocumentViewer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// The main window: the document list, the PDF viewer and the search.
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -44,7 +44,6 @@ namespace DocumentViewer
             Closed += (sender, e) => { _searchCts?.Cancel(); _searchCts?.Dispose(); };
         }
 
-        // Event handler for the Loaded event of the MainWindow
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadDocumentsAsync(_filter);
@@ -117,7 +116,8 @@ namespace DocumentViewer
         }
 
         // Displays the document with the given ID, or shows an error if it is not found or cannot be rendered
-        // synchronous on purpose, because all the documents are already loaded in the cache, so no async is needed
+        // synchronous on purpose, because all the documents are already loaded in the cache, so no async is needed;
+        // the rendering runs on the UI thread
         private void DisplayDocument(string documentId)
         {
             var content = _documentCache.Get(documentId);
@@ -148,7 +148,6 @@ namespace DocumentViewer
             }
         }
 
-        // Event handler for document selection changes in the ListBox
         private void DocumentListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DocumentListBox.SelectedItem is DocumentListItem item)

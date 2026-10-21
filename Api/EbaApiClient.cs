@@ -20,6 +20,8 @@ namespace DocumentViewer.Api
 
         public EbaApiClient(IAuthProvider authProvider)
         {
+            // The certificate check is off on purpose: test and production servers use different certificates
+            // that the client does not always trust
             var handler = new SocketsHttpHandler
             {
                 ConnectTimeout = TimeSpan.FromSeconds(5),

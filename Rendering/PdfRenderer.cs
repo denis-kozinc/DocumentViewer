@@ -44,7 +44,8 @@ namespace DocumentViewer.Rendering
             }
         }
 
-        // renders all pages of a PDF to a list of BitmapSource objects (for WPF)
+        // renders all pages of a PDF to a list of BitmapSource objects (for WPF);
+        // maxDimension is the size in pixels that a page is fitted into (width and height)
         public static List<BitmapSource> RenderAllPages(byte[] pdfBytes, int maxDimension = 2000)
         {
             var pages = new List<BitmapSource>();

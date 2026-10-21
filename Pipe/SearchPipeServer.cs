@@ -4,6 +4,10 @@ using System.Text.Json;
 
 namespace DocumentViewer.Pipe
 {
+    /// <summary>
+    /// The server side of the named pipe: receives the arguments of later launches and raises SearchRequested.
+    /// The event is raised on the thread that called RunAsync (the UI thread), because the awaits keep its context.
+    /// </summary>
     public class SearchPipeServer
     {
         private static readonly TimeSpan ReadTimeout = TimeSpan.FromSeconds(5);
@@ -55,6 +59,7 @@ namespace DocumentViewer.Pipe
                 }
                 catch (Exception e) when (e is IOException || e is JsonException)
                 {
+                    // Pause before the next pipe instance, so a persistent failure does not spin the loop
                     try
                     {
                         await Task.Delay(1000, ct);

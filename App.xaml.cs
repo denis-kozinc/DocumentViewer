@@ -6,7 +6,7 @@ using System.Windows;
 namespace DocumentViewer
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Starts the single instance of the application. Later launches pass their arguments to it through a named pipe.
     /// </summary>
     public partial class App : Application
     {
@@ -61,6 +61,7 @@ namespace DocumentViewer
                 {
                     DocumentSearchFilter newFilter;
 
+                    // The window is brought forward first, so the user sees it even when the arguments turn out to be invalid
                     if (_mainWindow?.WindowState == WindowState.Minimized)
                     {
                         _mainWindow.WindowState = WindowState.Normal;

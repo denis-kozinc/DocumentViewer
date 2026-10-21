@@ -17,7 +17,8 @@ namespace DocumentViewer.Search
             "DocType", "acIssuer", "acKey", "acDoc1", "acDept", "acCostDRV", "EbaID", "adDate", "endpoint", "token"
         };
 
-        // Parses the command-line arguments into a DocumentSearchFilter object
+        // Parses the command-line arguments into a DocumentSearchFilter object.
+        // The endpoint and token are accepted but not part of the filter, ParseConnection reads them.
         public static DocumentSearchFilter Parse(string[] args) => Parse(ReadPairs(args));
 
         // Builds the filter from already read name/value pairs, shared by the command line and the search window
@@ -39,7 +40,7 @@ namespace DocumentViewer.Search
             };
         }
 
-        // The endpoint and token come from the caller (Ares) next to the search arguments, empty means not given
+        // The endpoint and token come from the caller (Pantheon) next to the search arguments, empty means not given
         public static (string? Endpoint, string? Token) ParseConnection(string[] args)
         {
             var values = ReadPairs(args);

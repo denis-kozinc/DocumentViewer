@@ -15,6 +15,7 @@ namespace DocumentViewer
         private const double ZoomStep = 0.1;
         private const double DefaultZoom = 1.0;
 
+        // The window title when no document is shown
         private const string AppTitle = "Document Viewer";
 
         // Space around each page, also needed to work out the fit-to-width zoom
@@ -24,7 +25,6 @@ namespace DocumentViewer
         // One shared, frozen effect for all pages: frozen objects are immutable, so WPF can reuse them without tracking changes
         private static readonly DropShadowEffect PageShadow = CreatePageShadow();
 
-        // Event handlers for zoom buttons
         private void ZoomOut_OnClick(object sender, RoutedEventArgs e)
         {
             ChangeZoom(-ZoomStep);
@@ -35,7 +35,7 @@ namespace DocumentViewer
             ChangeZoom(ZoomStep);
         }
 
-        // Event handler for mouse wheel zooming
+        // Ctrl + mouse wheel zooms, a plain wheel scrolls
         private void PdfScrollViewer_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -45,13 +45,14 @@ namespace DocumentViewer
             }
         }
 
-        // Event handler for scroll changes to update the current page display
+        // Updates the current page display: the page whose top is in the upper half of the viewer
         private void PdfScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             int totalPages = PagesPanel.Children.Count;
             if (totalPages == 0) return;
 
             int currentPage = 1;
+            // When zoomed far out, the last page never reaches the upper half of the viewer, so at the bottom it counts as current
             bool atBottom = PdfScrollViewer.ScrollableHeight > 0
                             && e.VerticalOffset >= PdfScrollViewer.ScrollableHeight;
             if (atBottom)

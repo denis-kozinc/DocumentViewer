@@ -4,6 +4,9 @@ using System.Text.Json;
 
 namespace DocumentViewer.Pipe
 {
+    /// <summary>
+    /// The client side of the named pipe: a second launch hands its arguments to the running instance.
+    /// </summary>
     public static class SearchPipe
     {
         public const string Name = "DocumentViewer";

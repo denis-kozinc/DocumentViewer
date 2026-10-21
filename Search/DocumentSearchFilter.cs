@@ -15,6 +15,8 @@
         // Multiple values are separated by semicolons and passed on as they are
         public string? AcDept { get; init; }
         public string? AcCostDrv { get; init; }
+
+        // The exact documents to show, split on semicolons by the parser. They replace the search, other filters are ignored
         public IReadOnlyList<string> EbaIds { get; init; } = Array.Empty<string>();
 
         // The API only filters by date when both are set, the parser enforces that

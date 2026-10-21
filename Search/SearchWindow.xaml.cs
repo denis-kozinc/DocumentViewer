@@ -4,7 +4,7 @@ using System.Windows;
 namespace DocumentViewer.Search
 {
     /// <summary>
-    /// Lets the user enter the supported search filters. The window always starts empty.
+    /// Lets the user enter the supported search filters. The fields start filled with the current search.
     /// </summary>
     public partial class SearchWindow : Window
     {
@@ -13,7 +13,6 @@ namespace DocumentViewer.Search
         // Set when the user confirms a valid search, null if the window is closed without searching
         public DocumentSearchFilter? Filter { get; private set; }
 
-        // The fields start filled with the current search
         public SearchWindow(DocumentSearchFilter current)
         {
             InitializeComponent();

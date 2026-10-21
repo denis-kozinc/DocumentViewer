@@ -19,7 +19,7 @@ namespace DocumentViewer.Config
                 .Build();
         }
 
-        // Given by the caller (Ares) at startup, they take priority over appsettings and user secrets
+        // Given by the caller (Pantheon) at startup, they take priority over appsettings and user secrets
         // (which stay for development), and they live in memory only
         private static string? _endpointOverride;
         private static string? _tokenOverride;
