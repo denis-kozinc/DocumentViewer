@@ -13,9 +13,17 @@ namespace DocumentViewer.Search
         // Set when the user confirms a valid search, null if the window is closed without searching
         public DocumentSearchFilter? Filter { get; private set; }
 
-        public SearchWindow()
+        // The fields start filled with the current search
+        public SearchWindow(DocumentSearchFilter current)
         {
             InitializeComponent();
+            IssuerBox.Text = current.AcIssuer;
+            KeyBox.Text = current.AcKey;
+            Doc1Box.Text = current.AcDoc1;
+            DeptBox.Text = current.AcDept;
+            CostDrvBox.Text = current.AcCostDrv;
+            DateFromPicker.SelectedDate = current.DateFrom?.ToDateTime(TimeOnly.MinValue);
+            DateToPicker.SelectedDate = current.DateTo?.ToDateTime(TimeOnly.MinValue);
         }
 
         private void SearchButton_OnClick(object sender, RoutedEventArgs e)

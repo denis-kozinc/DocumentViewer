@@ -75,7 +75,10 @@ namespace DocumentViewer
                 if (filter.EbaIds.Count > 0)
                     idList = filter.EbaIds;
                 else
+                {
+                    ShowStatus("Searching...", isBusy: true);
                     idList = await _apiClient.SearchDocumentsAsync(filter);
+                }
 
                 ct.ThrowIfCancellationRequested();
 
@@ -210,7 +213,7 @@ namespace DocumentViewer
 
         private async void SearchButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var searchWindow = new SearchWindow { Owner = this };
+            var searchWindow = new SearchWindow(_filter) { Owner = this };
             if (searchWindow.ShowDialog() == true && searchWindow.Filter != null)
                 await LoadDocumentsAsync(searchWindow.Filter);
         }
