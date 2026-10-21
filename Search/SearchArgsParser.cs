@@ -18,9 +18,11 @@ namespace DocumentViewer.Search
         };
 
         // Parses the command-line arguments into a DocumentSearchFilter object
-        public static DocumentSearchFilter Parse(string[] args)
+        public static DocumentSearchFilter Parse(string[] args) => Parse(ReadPairs(args));
+
+        // Builds the filter from already read name/value pairs, shared by the command line and the search window
+        public static DocumentSearchFilter Parse(IReadOnlyDictionary<string, string> values)
         {
-            var values = ReadPairs(args);
             var (dateFrom, dateTo) = ParseDateRange(values);
 
             return new DocumentSearchFilter
@@ -67,7 +69,7 @@ namespace DocumentViewer.Search
         }
 
         // An empty value counts as not set, so a caller can pass all arguments and leave some blank
-        private static string? GetValue(Dictionary<string, string> values, string name)
+        private static string? GetValue(IReadOnlyDictionary<string, string> values, string name)
         {
             if (values.TryGetValue(name, out string? value))
             {
@@ -78,7 +80,7 @@ namespace DocumentViewer.Search
         }
 
         // adDate is one value holding two dates (from, to), a single date is not valid
-        private static (DateOnly? From, DateOnly? To) ParseDateRange(Dictionary<string, string> values)
+        private static (DateOnly? From, DateOnly? To) ParseDateRange(IReadOnlyDictionary<string, string> values)
         {
             string? text = GetValue(values, "adDate");
             if (text == null)
@@ -107,7 +109,7 @@ namespace DocumentViewer.Search
             return date;
         }
 
-        private static IReadOnlyList<string> ParseEbaIds(Dictionary<string, string> values)
+        private static IReadOnlyList<string> ParseEbaIds(IReadOnlyDictionary<string, string> values)
         {
             string? text = GetValue(values, "EbaID");
             if (text == null)

@@ -1,0 +1,47 @@
+<Window x:Class="DocumentViewer.Search.SearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        Title="Iskanje" Language="sl-SI" Width="420" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        Background="{DynamicResource SurfaceBrush}" TextElement.FontSize="13"
+        FocusManager.FocusedElement="{Binding ElementName=IssuerBox}">
+    <StackPanel Margin="20">
+        <TextBlock Text="Izdajatelj" Margin="0,0,0,4"/>
+        <ui:TextBox x:Name="IssuerBox" Margin="0,0,0,12"/>
+
+        <Grid Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Datum od" Margin="0,0,0,4"/>
+                <DatePicker x:Name="DateFromPicker" SelectedDateFormat="Short"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Datum do" Margin="0,0,0,4"/>
+                <DatePicker x:Name="DateToPicker" SelectedDateFormat="Short"/>
+            </StackPanel>
+        </Grid>
+
+        <TextBlock Text="Vezni dokument" Margin="0,0,0,4"/>
+        <ui:TextBox x:Name="Doc1Box" Margin="0,0,0,12"/>
+
+        <TextBlock Text="Oddelek" Margin="0,0,0,4"/>
+        <ui:TextBox x:Name="DeptBox" Margin="0,0,0,12"/>
+
+        <TextBlock Text="Stroškovni nosilec" Margin="0,0,0,4"/>
+        <ui:TextBox x:Name="CostDrvBox" Margin="0,0,0,12"/>
+
+        <TextBlock Text="acKey" Margin="0,0,0,4"/>
+        <ui:TextBox x:Name="KeyBox" Margin="0,0,0,12"/>
+
+        <TextBlock x:Name="ErrorText" Foreground="{DynamicResource ErrorBrush}" TextWrapping="Wrap"
+                   Margin="0,0,0,12" Visibility="Collapsed"/>
+
+        <ui:Button Content="Išči" Appearance="Primary" HorizontalAlignment="Right" MinWidth="96"
+                   IsDefault="True" Click="SearchButton_OnClick"/>
+    </StackPanel>
+</Window>

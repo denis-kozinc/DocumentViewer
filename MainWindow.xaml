@@ -24,8 +24,7 @@
                     <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
                                TextAlignment="Center"/>
                 </Border>
-                <ui:Button Icon="{ui:SymbolIcon ZoomIn24}" Appearance="Transparent" Click="ZoomIn_OnClick" ToolTip="Zoom in (Ctrl + +)"/>
-            </StackPanel>
+                <ui:Button Icon="{ui:SymbolIcon ZoomIn24}" Appearance="Transparent" Click="ZoomIn_OnClick" ToolTip="Zoom in (Ctrl + +)"/>            </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <ui:Button x:Name="FirstButton" Icon="{ui:SymbolIcon Previous24}" Appearance="Transparent" Focusable="False" 
@@ -53,6 +52,8 @@
                            ToolTip="Next document" Click="NextButton_OnClick" IsEnabled="False"/>
                 <ui:Button x:Name="LastButton" Icon="{ui:SymbolIcon Next24}" Appearance="Transparent" Focusable="False" 
                            ToolTip="Last document" Click="LastButton_OnClick" IsEnabled="False"/>
+                <ui:Button Icon="{ui:SymbolIcon Search24}" Appearance="Transparent" Click="SearchButton_OnClick"
+                           ToolTip="Iskanje" Margin="8,0,0,0"/>
                 
                 <Popup x:Name="DocumentListPopup" PlacementTarget="{Binding ElementName=DocumentBox}"
                        Placement="Bottom" StaysOpen="False" IsOpen="False" AllowsTransparency="True"

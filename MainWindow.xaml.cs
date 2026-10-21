@@ -208,6 +208,13 @@ namespace DocumentViewer
             ShowStatus(message, isError: true);
         }
 
+        private async void SearchButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var searchWindow = new SearchWindow { Owner = this };
+            if (searchWindow.ShowDialog() == true && searchWindow.Filter != null)
+                await LoadDocumentsAsync(searchWindow.Filter);
+        }
+
         private async void RetryButton_OnClick(object sender, RoutedEventArgs e)
         {
             await LoadDocumentsAsync(_filter);
