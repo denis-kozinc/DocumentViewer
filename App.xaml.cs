@@ -51,6 +51,8 @@ namespace DocumentViewer
 
             try
             {
+                var (endpoint, token) = SearchArgsParser.ParseConnection(e.Args);
+                AppConfig.Override(endpoint, token);
                 // Fail early with a clear message, before the window starts calling the API
                 AppConfig.Validate();
                 _cancellationTokenSource = new CancellationTokenSource();

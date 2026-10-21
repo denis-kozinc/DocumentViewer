@@ -14,7 +14,7 @@ namespace DocumentViewer.Search
         // The known argument names, case-insensitive
         private static readonly HashSet<string> KnownNames = new(StringComparer.OrdinalIgnoreCase)
         {
-            "DocType", "acIssuer", "acKey", "acDoc1", "acDept", "acCostDRV", "EbaID", "adDate"
+            "DocType", "acIssuer", "acKey", "acDoc1", "acDept", "acCostDRV", "EbaID", "adDate", "endpoint", "token"
         };
 
         // Parses the command-line arguments into a DocumentSearchFilter object
@@ -37,6 +37,13 @@ namespace DocumentViewer.Search
                 DateFrom = dateFrom,
                 DateTo = dateTo
             };
+        }
+
+        // The endpoint and token come from the caller (Ares) next to the search arguments, empty means not given
+        public static (string? Endpoint, string? Token) ParseConnection(string[] args)
+        {
+            var values = ReadPairs(args);
+            return (GetValue(values, "endpoint"), GetValue(values, "token"));
         }
 
         // Reads the command-line arguments as pairs of name and value, returning a dictionary
