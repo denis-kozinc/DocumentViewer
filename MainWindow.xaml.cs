@@ -77,7 +77,7 @@ namespace DocumentViewer
                 else
                 {
                     ShowStatus("Searching...", isBusy: true);
-                    idList = await _apiClient.SearchDocumentsAsync(filter);
+                    idList = await _apiClient.SearchDocumentsAsync(filter, ct);
                 }
 
                 ct.ThrowIfCancellationRequested();

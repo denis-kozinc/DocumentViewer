@@ -6,6 +6,8 @@ namespace DocumentViewer.Pipe
 {
     public class SearchPipeServer
     {
+        private static readonly TimeSpan ReadTimeout = TimeSpan.FromSeconds(5);
+
         public event Action<string[]>? SearchRequested;
 
         public async Task RunAsync(CancellationToken ct)
@@ -20,7 +22,18 @@ namespace DocumentViewer.Pipe
                     await server.WaitForConnectionAsync(ct);
 
                     using var reader = new StreamReader(server);
-                    string? json = await reader.ReadLineAsync(ct);
+                    // A client that connects and never sends a line must not block later searches
+                    using var readCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                    readCts.CancelAfter(ReadTimeout);
+                    string? json;
+                    try
+                    {
+                        json = await reader.ReadLineAsync(readCts.Token);
+                    }
+                    catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+                    {
+                        continue;
+                    }
                     if (json == null) continue;
 
                     string[]? args = JsonSerializer.Deserialize<string[]>(json);

@@ -32,14 +32,14 @@ namespace DocumentViewer.Api
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<List<string>> SearchDocumentsAsync(DocumentSearchFilter filter)
+        public async Task<List<string>> SearchDocumentsAsync(DocumentSearchFilter filter, CancellationToken token)
         {
             string url = $"{AppConfig.EBA_ENDPOINT}/invoicer/GetList?{BuildQueryParameters(filter)}";
 
-            using var response = await _httpClient.GetAsync(url);
+            using var response = await _httpClient.GetAsync(url, token);
             response.EnsureSuccessStatusCode();
 
-            string json = await response.Content.ReadAsStringAsync();
+            string json = await response.Content.ReadAsStringAsync(token);
 
             var idList = new List<string>();
             using (JsonDocument doc = JsonDocument.Parse(json))
