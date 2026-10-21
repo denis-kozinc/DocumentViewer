@@ -46,6 +46,22 @@ dotnet build
 
 Requires the .NET 10 SDK on Windows.
 
+## Installer
+
+A single `DocumentViewer-Setup.exe` installs the app for the current user without admin rights.
+It always installs to `%LOCALAPPDATA%\Programs\DocumentViewer`, so Pantheon can start
+`%LOCALAPPDATA%\Programs\DocumentViewer\DocumentViewer.exe`.
+
+Requires [Inno Setup 6](https://jrsoftware.org/isdl.php). Build with:
+
+```
+.\installer\build.ps1
+```
+
+This publishes the app (self-contained, win-x64) into `publish\` and creates `installer\output\DocumentViewer-Setup.exe`.
+Running a newer setup upgrades the installed app and keeps an edited `appsettings.json`.
+Raise `AppVersion` in `installer\DocumentViewer.iss` for each release, and never change `AppId`.
+
 ## Notes
 
 - Documents are kept in memory only, nothing is written to disk.
