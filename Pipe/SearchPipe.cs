@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 namespace DocumentViewer.Pipe
@@ -11,10 +12,19 @@ namespace DocumentViewer.Pipe
     {
         public const string Name = "DocumentViewer";
 
+        private const int AsfwAny = -1;
+
+        // Windows lets only the foreground process bring a window forward; otherwise it just flashes in the taskbar
+        [DllImport("user32.dll")]
+        private static extern bool AllowSetForegroundWindow(int processId);
+
         public static bool TrySend(string[] args)
         {
             try
             {
+                // This freshly started process holds the foreground right, so it hands it to the running instance
+                AllowSetForegroundWindow(AsfwAny);
+
                 using var client = new NamedPipeClientStream(".", Name, PipeDirection.Out, PipeOptions.CurrentUserOnly);
 
                 client.Connect(3000);

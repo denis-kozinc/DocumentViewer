@@ -35,7 +35,7 @@
         <TextBlock Text="Stroškovni nosilec" Margin="0,0,0,4"/>
         <ui:TextBox x:Name="CostDrvBox" Margin="0,0,0,12"/>
 
-        <TextBlock Text="acKey" Margin="0,0,0,4"/>
+        <TextBlock Text="Ključ" Margin="0,0,0,4"/>
         <ui:TextBox x:Name="KeyBox" Margin="0,0,0,12"/>
 
         <TextBlock x:Name="ErrorText" Foreground="{DynamicResource ErrorBrush}" TextWrapping="Wrap"
