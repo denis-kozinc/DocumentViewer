@@ -5,12 +5,11 @@ Windows desktop app (WPF, .NET 10) that finds documents in the EBA API and shows
 ## Run
 
 ```
-DocumentViewer.exe --endpoint https://eba.example.com --token <token> --acKey 12345
+DocumentViewer.exe --endpoint https://eba.example.com --token <token> --acKey <acKey>
 ```
 
 The app is published self-contained, so no .NET installation is needed to run it.
 Only one instance runs. A later launch passes its arguments to the running window and exits.
-Exit code `1` means the start failed (invalid arguments or connection data).
 
 ## Arguments
 
@@ -22,7 +21,7 @@ Every argument is `--name value`, all are optional.
 | `--token` | API access token |
 | `--DocType` | Document type, default `racuni` |
 | `--acIssuer`, `--acKey`, `--acDoc1` | Search by issuer, key, linked document |
-| `--acDept`, `--acCostDRV` | Department, cost driver (several values separated by `;`) |
+| `--acDept`, `--acCostDRV` | Department, cost driver |
 | `--adDate` | Date range `from;to`, format `yyyy-MM-dd`, both required |
 | `--EbaID` | Exact documents, IDs separated by `;`. Other filters are ignored |
 
