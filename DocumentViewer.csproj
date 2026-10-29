@@ -9,6 +9,7 @@
     <UserSecretsId>8b7aa67d-1d7a-4d0d-9687-5bab797b3c51</UserSecretsId>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	  <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+	  <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

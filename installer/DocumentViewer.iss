@@ -5,7 +5,7 @@
 ; Never change the AppId, Windows uses it to recognize an upgrade of the same app
 AppId={{71448BD5-FB3C-43FB-909F-2E953237AAC9}
 AppName=Document Viewer
-AppVersion=1.0.0
+AppVersion=1.1.0
 AppPublisher=Softeh d.o.o.
 
 ; Fixed target folder: %LOCALAPPDATA%\Programs\DocumentViewer
