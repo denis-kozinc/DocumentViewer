@@ -44,13 +44,18 @@ namespace DocumentViewer.Rendering
             }
         }
 
-        // renders all pages of a PDF to a list of BitmapSource objects (for WPF);
-        // maxDimension is the size in pixels that a page is fitted into (width and height)
-        public static List<BitmapSource> RenderAllPages(byte[] pdfBytes, int maxDimension = 2000)
+        // The size in layout units that a page is fitted into (width and height), it decides the zoom the viewer starts with
+        private const int LayoutDimension = 1600;
+
+        // The size in pixels that a page is rendered into, it decides how sharp the page is
+        private const int RenderDimension = 3000;
+
+        // renders all pages of a PDF to a list of BitmapSource objects (for WPF)
+        public static List<BitmapSource> RenderAllPages(byte[] pdfBytes)
         {
             var pages = new List<BitmapSource>();
             using (var docReader =
-                   DocLib.Instance.GetDocReader(pdfBytes, new PageDimensions(maxDimension, maxDimension)))
+                   DocLib.Instance.GetDocReader(pdfBytes, new PageDimensions(RenderDimension, RenderDimension)))
             {
                 int pageCount = docReader.GetPageCount();
                 for (int i = 0; i < pageCount; i++)
@@ -61,6 +66,9 @@ namespace DocumentViewer.Rendering
                         // convert the Bitmap to a BitmapImage for WPF
                         using (var memoryStream = new MemoryStream())
                         {
+                            // WPF sizes the image from its DPI, so the extra pixels do not enlarge the page in the viewer
+                            float dpi = 96f * RenderDimension / LayoutDimension;
+                            bitmap.SetResolution(dpi, dpi);
                             bitmap.Save(memoryStream, ImageFormat.Png);
                             memoryStream.Position = 0;
                             var bitmapImage = new BitmapImage();

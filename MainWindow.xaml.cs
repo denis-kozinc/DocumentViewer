@@ -32,6 +32,10 @@ namespace DocumentViewer
             InitializeComponent();
             _filter = filter;
 
+            // The default size must not exceed the usable screen area, otherwise it is cut off on small screens
+            Width = Math.Min(Width, SystemParameters.WorkArea.Width);
+            Height = Math.Min(Height, SystemParameters.WorkArea.Height);
+
             // Determine the authentication method based on the presence of an API token
             IAuthProvider authProvider = string.IsNullOrEmpty(AppConfig.API_TOKEN)
                 ? new PasswordAuthProvider()
