@@ -20,9 +20,12 @@ namespace DocumentViewer
         private readonly EbaApiClient _apiClient;
         private DocumentSearchFilter _filter;
         private readonly DocumentCache _documentCache;
+
         private CancellationTokenSource? _searchCts;
+
         // The first document shown after startup is zoomed to the window width, later documents keep the zoom
         private bool _fitWidthPending = true;
+
         // Free filters can match a lot of documents. All of them are loaded, because the creation date is only known
         // after the PDF is fetched and the GetList order is not guaranteed, but only this many of the newest are shown
         private const int MaxDocuments = 100;
@@ -45,7 +48,11 @@ namespace DocumentViewer
             _documentCache = new DocumentCache(_apiClient);
 
             Loaded += MainWindow_Loaded;
-            Closed += (sender, e) => { _searchCts?.Cancel(); _searchCts?.Dispose(); };
+            Closed += (sender, e) =>
+            {
+                _searchCts?.Cancel();
+                _searchCts?.Dispose();
+            };
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -142,6 +149,7 @@ namespace DocumentViewer
                     FitWidth(pages);
                     _fitWidthPending = false;
                 }
+
                 CurrentDocumentText.Text = content.DisplayName;
                 Title = $"{content.DisplayName} - {AppTitle}";
             }
@@ -159,14 +167,17 @@ namespace DocumentViewer
                 DisplayDocument(item.Id);
                 PdfScrollViewer.ScrollToTop();
             }
+
             UpdateNavigationButtons();
             DocumentListPopup.IsOpen = false;
             PdfScrollViewer.Focus();
         }
+
         private void DocumentListButton_OnClick(object sender, RoutedEventArgs e)
         {
             DocumentListPopup.IsOpen = true;
         }
+
         private void DocumentListPopup_OnOpened(object? sender, EventArgs e)
         {
             if (DocumentListBox.SelectedItem != null)
@@ -179,14 +190,17 @@ namespace DocumentViewer
         private void ShowStatus(string? message, bool isError = false, bool isBusy = false)
         {
             bool hasMessage = !string.IsNullOrEmpty(message);
-            var brush = isError ? (System.Windows.Media.Brush)FindResource("ErrorBrush") : System.Windows.SystemColors.ControlTextBrush;
+            var brush = isError
+                ? (System.Windows.Media.Brush)FindResource("ErrorBrush")
+                : System.Windows.SystemColors.ControlTextBrush;
 
             StatusText.Text = message ?? string.Empty;
             StatusText.Foreground = brush;
             StatusText.Visibility = hasMessage ? Visibility.Visible : Visibility.Collapsed;
 
             // The icon is hidden while busy, the progress ring takes its place
-            StatusIcon.Symbol = isError ? Wpf.Ui.Controls.SymbolRegular.ErrorCircle24 : Wpf.Ui.Controls.SymbolRegular.Info24;
+            StatusIcon.Symbol =
+                isError ? Wpf.Ui.Controls.SymbolRegular.ErrorCircle24 : Wpf.Ui.Controls.SymbolRegular.Info24;
             StatusIcon.Foreground = brush;
             StatusIcon.Visibility = hasMessage && !isBusy ? Visibility.Visible : Visibility.Collapsed;
             LoadingRing.Visibility = isBusy ? Visibility.Visible : Visibility.Collapsed;

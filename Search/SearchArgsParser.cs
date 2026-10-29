@@ -84,6 +84,7 @@ namespace DocumentViewer.Search
                 if (value.Length > 0)
                     return value;
             }
+
             return null;
         }
 
@@ -129,6 +130,7 @@ namespace DocumentViewer.Search
                 if (trimmed.Length > 0)
                     ids.Add(trimmed);
             }
+
             return ids;
         }
     }

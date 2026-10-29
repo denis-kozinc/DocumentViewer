@@ -51,6 +51,7 @@ namespace DocumentViewer.Api
                 {
                     return idList; // Return an empty list when no documents are found
                 }
+
                 EnsureListSuccess(result);
 
                 foreach (var element in result.GetProperty("docs").EnumerateArray())
@@ -59,13 +60,15 @@ namespace DocumentViewer.Api
                         idList.Add(id);
                 }
             }
+
             return idList;
         }
 
         public async Task<DocumentContent> GetDocumentAsync(string documentId, CancellationToken token)
         {
             // The generic API answers on this path for any DocType
-            string url = $"{AppConfig.EBA_ENDPOINT}/ebanext/racuni/content/{Uri.EscapeDataString(documentId)}?ReturnVisualisation=true";
+            string url =
+                $"{AppConfig.EBA_ENDPOINT}/ebanext/racuni/content/{Uri.EscapeDataString(documentId)}?ReturnVisualisation=true";
 
             using var response = await _httpClient.GetAsync(url, token);
             response.EnsureSuccessStatusCode();
@@ -108,6 +111,7 @@ namespace DocumentViewer.Api
                 string trimmed = field.GetString()!.Trim();
                 return trimmed.Length > 0 ? trimmed : null;
             }
+
             return null;
         }
 
@@ -133,6 +137,7 @@ namespace DocumentViewer.Api
             {
                 message = text.GetString()!;
             }
+
             throw new EbaApiException(message);
         }
 

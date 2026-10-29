@@ -45,6 +45,7 @@ namespace DocumentViewer.Search
                 ShowError("Izpolni oba datuma ali nobenega.");
                 return;
             }
+
             if (from.HasValue && to.HasValue)
             {
                 if (from > to)
@@ -52,7 +53,9 @@ namespace DocumentViewer.Search
                     ShowError("Datum od je za datumom do.");
                     return;
                 }
-                values["adDate"] = $"{from.Value.ToString(DateFormat, CultureInfo.InvariantCulture)};{to.Value.ToString(DateFormat, CultureInfo.InvariantCulture)}";
+
+                values["adDate"] =
+                    $"{from.Value.ToString(DateFormat, CultureInfo.InvariantCulture)};{to.Value.ToString(DateFormat, CultureInfo.InvariantCulture)}";
             }
 
             // Without any criteria the search could match too many documents

@@ -12,92 +12,106 @@
     <DockPanel>
         <Border DockPanel.Dock="Top" Background="{DynamicResource SurfaceBrush}"
                 BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1">
-        <Grid Margin="8,6" TextElement.FontSize="13">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid Margin="8,6" TextElement.FontSize="13">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal" >
-                <ui:Button Icon="{ui:SymbolIcon ZoomOut24}" Appearance="Transparent" Click="ZoomOut_OnClick" ToolTip="Zoom out (Ctrl + -)"/>
-                <Border Style="{StaticResource ChipBorder}" MinWidth="56" Margin="8,0">
-                    <TextBlock x:Name="ZoomPercentText" Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}" 
-                               TextAlignment="Center"/>
-                </Border>
-                <ui:Button Icon="{ui:SymbolIcon ZoomIn24}" Appearance="Transparent" Click="ZoomIn_OnClick" ToolTip="Zoom in (Ctrl + +)"/>            </StackPanel>
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <ui:Button x:Name="FirstButton" Icon="{ui:SymbolIcon Previous24}" Appearance="Transparent" Focusable="False" 
-                           ToolTip="First document" Click="FirstButton_OnClick" IsEnabled="False"/>
-                <ui:Button x:Name="PreviousButton" Icon="{ui:SymbolIcon ChevronLeft24}" Appearance="Transparent" Focusable="False" 
-                           ToolTip="Previous document" Click="PreviousButton_OnClick" IsEnabled="False"/>
-
-                <Border x:Name="DocumentBox" Width="220" Height="32" Margin="4,0" BorderBrush="{DynamicResource LineBrush}"
-                        BorderThickness="1" CornerRadius="4">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox x:Name="CurrentDocumentText" Grid.Column="0" VerticalAlignment="Center" 
-                                 Margin="8,0" IsReadOnly="True" BorderThickness="0" Background="Transparent"
-                                 Padding="0" Style="{x:Null}"
-                                 ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
-                        <ui:Button x:Name="DocumentListButton" Grid.Column="1" Icon="{ui:SymbolIcon MoreHorizontal24}" Appearance="Transparent"
-                                   ToolTip="Select document" Click="DocumentListButton_OnClick" Margin="0,0,1,0" IsEnabled="False"/>
-                    </Grid>
-                </Border>
-
-                <ui:Button x:Name="NextButton" Icon="{ui:SymbolIcon ChevronRight24}" Appearance="Transparent" Focusable="False" 
-                           ToolTip="Next document" Click="NextButton_OnClick" IsEnabled="False"/>
-                <ui:Button x:Name="LastButton" Icon="{ui:SymbolIcon Next24}" Appearance="Transparent" Focusable="False" 
-                           ToolTip="Last document" Click="LastButton_OnClick" IsEnabled="False"/>
-                <ui:Button Icon="{ui:SymbolIcon Search24}" Appearance="Transparent" Click="SearchButton_OnClick"
-                           ToolTip="Iskanje" Margin="8,0,0,0"/>
-                
-                <Popup x:Name="DocumentListPopup" PlacementTarget="{Binding ElementName=DocumentBox}"
-                       Placement="Bottom" StaysOpen="False" IsOpen="False" AllowsTransparency="True"
-                       Opened="DocumentListPopup_OnOpened">
-                    <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}"
-                            BorderThickness="1" CornerRadius="4" Padding="2" TextElement.FontSize="13"
-                            Width="{Binding ActualWidth, ElementName=DocumentBox}">
-                        <ui:ListView x:Name="DocumentListBox" MaxHeight="300" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                                     SelectionChanged="DocumentListBox_OnSelectionChanged">
-                            <ui:ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Label}"/>
-                                </DataTemplate>
-                            </ui:ListView.ItemTemplate>
-                        </ui:ListView>
-
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <ui:Button Icon="{ui:SymbolIcon ZoomOut24}" Appearance="Transparent" Click="ZoomOut_OnClick"
+                               ToolTip="Zoom out (Ctrl + -)" />
+                    <Border Style="{StaticResource ChipBorder}" MinWidth="56" Margin="8,0">
+                        <TextBlock x:Name="ZoomPercentText"
+                                   Text="{Binding ElementName=ZoomTransform, Path=ScaleX, StringFormat={}{0:P0}}"
+                                   TextAlignment="Center" />
                     </Border>
-                </Popup>
+                    <ui:Button Icon="{ui:SymbolIcon ZoomIn24}" Appearance="Transparent" Click="ZoomIn_OnClick"
+                               ToolTip="Zoom in (Ctrl + +)" />
+                </StackPanel>
 
-            </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <ui:Button x:Name="FirstButton" Icon="{ui:SymbolIcon Previous24}" Appearance="Transparent"
+                               Focusable="False"
+                               ToolTip="First document" Click="FirstButton_OnClick" IsEnabled="False" />
+                    <ui:Button x:Name="PreviousButton" Icon="{ui:SymbolIcon ChevronLeft24}" Appearance="Transparent"
+                               Focusable="False"
+                               ToolTip="Previous document" Click="PreviousButton_OnClick" IsEnabled="False" />
 
-            <Border Grid.Column="2" HorizontalAlignment="Right" Margin="8,0">
-                <Border.Style>
-                    <Style TargetType="Border" BasedOn="{StaticResource ChipBorder}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Text, ElementName=CurrentPageText}" Value="">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <TextBlock x:Name="CurrentPageText"/>
-            </Border>
-        </Grid>
+                    <Border x:Name="DocumentBox" Width="220" Height="32" Margin="4,0"
+                            BorderBrush="{DynamicResource LineBrush}"
+                            BorderThickness="1" CornerRadius="4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="CurrentDocumentText" Grid.Column="0" VerticalAlignment="Center"
+                                     Margin="8,0" IsReadOnly="True" BorderThickness="0" Background="Transparent"
+                                     Padding="0" Style="{x:Null}"
+                                     ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                            <ui:Button x:Name="DocumentListButton" Grid.Column="1"
+                                       Icon="{ui:SymbolIcon MoreHorizontal24}" Appearance="Transparent"
+                                       ToolTip="Select document" Click="DocumentListButton_OnClick" Margin="0,0,1,0"
+                                       IsEnabled="False" />
+                        </Grid>
+                    </Border>
+
+                    <ui:Button x:Name="NextButton" Icon="{ui:SymbolIcon ChevronRight24}" Appearance="Transparent"
+                               Focusable="False"
+                               ToolTip="Next document" Click="NextButton_OnClick" IsEnabled="False" />
+                    <ui:Button x:Name="LastButton" Icon="{ui:SymbolIcon Next24}" Appearance="Transparent"
+                               Focusable="False"
+                               ToolTip="Last document" Click="LastButton_OnClick" IsEnabled="False" />
+                    <ui:Button Icon="{ui:SymbolIcon Search24}" Appearance="Transparent" Click="SearchButton_OnClick"
+                               ToolTip="Iskanje" Margin="8,0,0,0" />
+
+                    <Popup x:Name="DocumentListPopup" PlacementTarget="{Binding ElementName=DocumentBox}"
+                           Placement="Bottom" StaysOpen="False" IsOpen="False" AllowsTransparency="True"
+                           Opened="DocumentListPopup_OnOpened">
+                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}"
+                                BorderThickness="1" CornerRadius="4" Padding="2" TextElement.FontSize="13"
+                                Width="{Binding ActualWidth, ElementName=DocumentBox}">
+                            <ui:ListView x:Name="DocumentListBox" MaxHeight="300"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         SelectionChanged="DocumentListBox_OnSelectionChanged">
+                                <ui:ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding Label}" />
+                                    </DataTemplate>
+                                </ui:ListView.ItemTemplate>
+                            </ui:ListView>
+
+                        </Border>
+                    </Popup>
+
+                </StackPanel>
+
+                <Border Grid.Column="2" HorizontalAlignment="Right" Margin="8,0">
+                    <Border.Style>
+                        <Style TargetType="Border" BasedOn="{StaticResource ChipBorder}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=CurrentPageText}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock x:Name="CurrentPageText" />
+                </Border>
+            </Grid>
         </Border>
 
         <Grid>
             <ScrollViewer x:Name="PdfScrollViewer" ScrollChanged="PdfScrollViewer_OnScrollChanged"
-                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
-                          PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel" Background="{DynamicResource ViewerBackgroundBrush}">
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                          PreviewMouseWheel="PdfScrollViewer_OnPreviewMouseWheel"
+                          Background="{DynamicResource ViewerBackgroundBrush}">
                 <StackPanel x:Name="PagesPanel">
                     <StackPanel.LayoutTransform>
-                        <ScaleTransform x:Name="ZoomTransform" ScaleX="1" ScaleY="1"/>
+                        <ScaleTransform x:Name="ZoomTransform" ScaleX="1" ScaleY="1" />
                     </StackPanel.LayoutTransform>
                 </StackPanel>
             </ScrollViewer>
@@ -107,22 +121,23 @@
                     Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource LineBrush}"
                     BorderThickness="1" CornerRadius="8">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="16" ShadowDepth="1" Opacity="0.2" Color="Black"/>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="1" Opacity="0.2" Color="Black" />
                 </Border.Effect>
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <ui:ProgressRing x:Name="LoadingRing" IsIndeterminate="True" Width="32" Height="32" 
-                                     HorizontalAlignment="Center" Visibility="Collapsed" Margin="0,0,0,8"/>
+                    <ui:ProgressRing x:Name="LoadingRing" IsIndeterminate="True" Width="32" Height="32"
+                                     HorizontalAlignment="Center" Visibility="Collapsed" Margin="0,0,0,8" />
                     <ui:SymbolIcon x:Name="StatusIcon" FontSize="40" HorizontalAlignment="Center"
-                                   Margin="0,0,0,8" Visibility="Collapsed"/>
+                                   Margin="0,0,0,8" Visibility="Collapsed" />
                     <TextBox x:Name="StatusText" IsReadOnly="True" Background="Transparent" Visibility="Collapsed"
-                             BorderThickness="0" Style="{x:Null}" FontSize="16" TextWrapping="Wrap" TextAlignment="Center"
+                             BorderThickness="0" Style="{x:Null}" FontSize="16" TextWrapping="Wrap"
+                             TextAlignment="Center"
                              MaxWidth="480" Margin="20,0">
                     </TextBox>
                     <ui:Button x:Name="RetryButton" Content="Retry" Appearance="Secondary" HorizontalAlignment="Center"
-                               Margin="0,8,0,0" Click="RetryButton_OnClick" Visibility="Collapsed"/>
+                               Margin="0,8,0,0" Click="RetryButton_OnClick" Visibility="Collapsed" />
                 </StackPanel>
             </Border>
-            
+
         </Grid>
     </DockPanel>
 </Window>

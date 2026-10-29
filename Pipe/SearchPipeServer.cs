@@ -38,6 +38,7 @@ namespace DocumentViewer.Pipe
                     {
                         continue;
                     }
+
                     if (json == null) continue;
 
                     string[]? args = JsonSerializer.Deserialize<string[]>(json);
@@ -64,7 +65,10 @@ namespace DocumentViewer.Pipe
                     {
                         await Task.Delay(1000, ct);
                     }
-                    catch (OperationCanceledException) { break; }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
                 }
             }
         }

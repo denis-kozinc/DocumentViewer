@@ -8,38 +8,38 @@
         FocusManager.FocusedElement="{Binding ElementName=IssuerBox}"
         UseLayoutRounding="True">
     <StackPanel Margin="20">
-        <TextBlock Text="Izdajatelj" Margin="0,0,0,4"/>
-        <ui:TextBox x:Name="IssuerBox" Margin="0,0,0,12"/>
+        <TextBlock Text="Izdajatelj" Margin="0,0,0,4" />
+        <ui:TextBox x:Name="IssuerBox" Margin="0,0,0,12" />
 
         <Grid Margin="0,0,0,12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="12"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
-                <TextBlock Text="Datum od" Margin="0,0,0,4"/>
-                <DatePicker x:Name="DateFromPicker" SelectedDateFormat="Short"/>
+                <TextBlock Text="Datum od" Margin="0,0,0,4" />
+                <DatePicker x:Name="DateFromPicker" SelectedDateFormat="Short" />
             </StackPanel>
             <StackPanel Grid.Column="2">
-                <TextBlock Text="Datum do" Margin="0,0,0,4"/>
-                <DatePicker x:Name="DateToPicker" SelectedDateFormat="Short"/>
+                <TextBlock Text="Datum do" Margin="0,0,0,4" />
+                <DatePicker x:Name="DateToPicker" SelectedDateFormat="Short" />
             </StackPanel>
         </Grid>
 
-        <TextBlock Text="Vezni dokument" Margin="0,0,0,4"/>
-        <ui:TextBox x:Name="Doc1Box" Margin="0,0,0,12"/>
+        <TextBlock Text="Vezni dokument" Margin="0,0,0,4" />
+        <ui:TextBox x:Name="Doc1Box" Margin="0,0,0,12" />
 
-        <TextBlock Text="Oddelek" Margin="0,0,0,4"/>
-        <ui:TextBox x:Name="DeptBox" Margin="0,0,0,12"/>
+        <TextBlock Text="Oddelek" Margin="0,0,0,4" />
+        <ui:TextBox x:Name="DeptBox" Margin="0,0,0,12" />
 
-        <TextBlock Text="Stroškovni nosilec" Margin="0,0,0,4"/>
-        <ui:TextBox x:Name="CostDrvBox" Margin="0,0,0,12"/>
+        <TextBlock Text="Stroškovni nosilec" Margin="0,0,0,4" />
+        <ui:TextBox x:Name="CostDrvBox" Margin="0,0,0,12" />
 
-        <TextBlock Text="Ključ" Margin="0,0,0,4"/>
-        <ui:TextBox x:Name="KeyBox" Margin="0,0,0,12"/>
+        <TextBlock Text="Ključ" Margin="0,0,0,4" />
+        <ui:TextBox x:Name="KeyBox" Margin="0,0,0,12" />
 
-        <TextBlock Text="Tip dokumenta" Margin="0,0,0,4"/>
+        <TextBlock Text="Tip dokumenta" Margin="0,0,0,4" />
         <ComboBox x:Name="DocTypeBox" SelectedValuePath="Tag" Margin="0,0,0,12">
             <ComboBoxItem Content="Račun" Tag="racuni"></ComboBoxItem>
             <ComboBoxItem Content="Dobavnica" Tag="dobavnica"></ComboBoxItem>
@@ -49,9 +49,9 @@
         </ComboBox>
 
         <TextBlock x:Name="ErrorText" Foreground="{DynamicResource ErrorBrush}" TextWrapping="Wrap"
-                   Margin="0,0,0,12" Visibility="Collapsed"/>
+                   Margin="0,0,0,12" Visibility="Collapsed" />
 
         <ui:Button Content="Išči" Appearance="Primary" HorizontalAlignment="Right" MinWidth="96"
-                   IsDefault="True" Click="SearchButton_OnClick"/>
+                   IsDefault="True" Click="SearchButton_OnClick" />
     </StackPanel>
 </Window>

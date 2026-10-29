@@ -14,6 +14,7 @@ namespace DocumentViewer.Documents
         private readonly EbaApiClient _apiClient;
         private ConcurrentDictionary<string, DocumentContent> _documents = new();
         private const int MaxParallelRequests = 4;
+
         public DocumentCache(EbaApiClient apiClient)
         {
             _apiClient = apiClient;
@@ -51,9 +52,9 @@ namespace DocumentViewer.Documents
         private static bool IsSingleDocumentError(Exception e) =>
             e is EbaApiException or FormatException or JsonException
                 or HttpRequestException
-            {
-                StatusCode: not null and not (HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
-            };
+                {
+                    StatusCode: not null and not (HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
+                };
 
         public DocumentContent? Get(string id) => _documents.GetValueOrDefault(id);
     }

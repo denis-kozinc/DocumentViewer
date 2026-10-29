@@ -9,6 +9,7 @@ namespace DocumentViewer.Config
     public static class AppConfig
     {
         private static IConfiguration _config;
+
         static AppConfig()
         {
             // reloadOnChange is off on purpose: values are read once at startup
@@ -57,5 +58,4 @@ namespace DocumentViewer.Config
 
         private static string Read(string key) => (_config[key] ?? string.Empty).Trim();
     }
-
 }

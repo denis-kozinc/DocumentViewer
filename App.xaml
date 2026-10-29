@@ -5,19 +5,19 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemesDictionary Theme="Light"/>
-                <ui:ControlsDictionary/>
+                <ui:ThemesDictionary Theme="Light" />
+                <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
-            <SolidColorBrush x:Key="ViewerBackgroundBrush" Color="#DCDCDC"/>
-            <SolidColorBrush x:Key="LineBrush" Color="LightGray"/>
-            <SolidColorBrush x:Key="SurfaceBrush" Color="White"/>
-            <SolidColorBrush x:Key="ErrorBrush" Color="IndianRed"/>
+            <SolidColorBrush x:Key="ViewerBackgroundBrush" Color="#DCDCDC" />
+            <SolidColorBrush x:Key="LineBrush" Color="LightGray" />
+            <SolidColorBrush x:Key="SurfaceBrush" Color="White" />
+            <SolidColorBrush x:Key="ErrorBrush" Color="IndianRed" />
             <Style x:Key="ChipBorder" TargetType="Border">
-                <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}"/>
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="CornerRadius" Value="4"/>
-                <Setter Property="Padding" Value="8,4"/>
-                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="4" />
+                <Setter Property="Padding" Value="8,4" />
+                <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>

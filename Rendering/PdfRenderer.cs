@@ -41,9 +41,8 @@ namespace DocumentViewer.Rendering
                     }
                 }
             }
+
             return pages;
         }
-
     }
 }
-
