@@ -103,14 +103,15 @@ namespace DocumentViewer
                 var image = new Image { Source = page };
                 RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.HighQuality);
 
-                var border = new Border
+                // The shadow sits on its own element behind the image, an effect on the image itself would resample the page
+                var shadow = new Border { Background = Brushes.White, Effect = PageShadow };
+                var host = new Grid
                 {
                     Margin = new Thickness(PageSideMargin, PageVerticalMargin, PageSideMargin, PageVerticalMargin),
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Effect = PageShadow,
-                    Child = image,
+                    Children = { shadow, image },
                 };
-                PagesPanel.Children.Add(border);
+                PagesPanel.Children.Add(host);
             }
         }
 
@@ -155,7 +156,11 @@ namespace DocumentViewer
 
         private void ChangeZoom(double delta)
         {
-            SetZoom(ZoomTransform.ScaleX + delta);
+            // Snap to the step grid so zooming from a fit-width value still lands on round values such as 100%
+            double step = Math.Abs(delta);
+            double current = ZoomTransform.ScaleX / step;
+            double snapped = delta > 0 ? Math.Ceiling(current + 1e-9) : Math.Floor(current - 1e-9);
+            SetZoom(snapped * step);
         }
     }
 }
