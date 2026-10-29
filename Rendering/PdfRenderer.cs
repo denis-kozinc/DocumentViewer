@@ -1,9 +1,6 @@
 ﻿using Docnet.Core;
 using Docnet.Core.Models;
-using Docnet.Core.Readers;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace DocumentViewer.Rendering
@@ -13,37 +10,6 @@ namespace DocumentViewer.Rendering
     /// </summary>
     public static class PdfRenderer
     {
-        // helper method to render a page to a Bitmap
-        private static Bitmap RenderPageToBitmap(IPageReader pageReader)
-        {
-            var rawBytes = pageReader.GetImage();
-            int width = pageReader.GetPageWidth();
-            int height = pageReader.GetPageHeight();
-
-            // convert raw bytes to a Bitmap object (still has transparent background)
-            using (var transparentBitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb))
-            {
-                var bmpData = transparentBitmap.LockBits(
-                    new Rectangle(0, 0, width, height),
-                    ImageLockMode.WriteOnly,
-                    PixelFormat.Format32bppArgb);
-
-                // copy raw pixel data directly into the bitmap (faster than pixel by pixel)
-                System.Runtime.InteropServices.Marshal.Copy(rawBytes, 0, bmpData.Scan0, rawBytes.Length);
-                transparentBitmap.UnlockBits(bmpData);
-
-                // draw the transparent image onto a white background to get the final look (without blackness)
-                var finalBitmap = new Bitmap(width, height, PixelFormat.Format32bppRgb);
-                using (var g = Graphics.FromImage(finalBitmap))
-                {
-                    g.Clear(Color.White);
-                    g.DrawImage(transparentBitmap, 0, 0); // GDI+ automatically handles blending
-                }
-                // return the final bitmap - caller is responsible for saving/disposing it
-                return finalBitmap;
-            }
-        }
-
         // The size in layout units that a page is fitted into (width and height), it decides the zoom the viewer starts with
         private const int LayoutDimension = 1600;
 
@@ -61,24 +27,17 @@ namespace DocumentViewer.Rendering
                 for (int i = 0; i < pageCount; i++)
                 {
                     using (var pageReader = docReader.GetPageReader(i))
-                    using (var bitmap = RenderPageToBitmap(pageReader))
                     {
-                        // convert the Bitmap to a BitmapImage for WPF
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            // WPF sizes the image from its DPI, so the extra pixels do not enlarge the page in the viewer
-                            float dpi = 96f * RenderDimension / LayoutDimension;
-                            bitmap.SetResolution(dpi, dpi);
-                            bitmap.Save(memoryStream, ImageFormat.Png);
-                            memoryStream.Position = 0;
-                            var bitmapImage = new BitmapImage();
-                            bitmapImage.BeginInit();
-                            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                            bitmapImage.StreamSource = memoryStream;
-                            bitmapImage.EndInit();
-                            bitmapImage.Freeze();
-                            pages.Add(bitmapImage);
-                        }
+                        // the raw BGRA pixels go straight to WPF, the transparent background is blended with the white
+                        // page behind the image in the viewer
+                        int width = pageReader.GetPageWidth();
+                        int height = pageReader.GetPageHeight();
+                        // WPF sizes the image from its DPI, so the extra pixels do not enlarge the page in the viewer
+                        double dpi = 96.0 * RenderDimension / LayoutDimension;
+                        var page = BitmapSource.Create(width, height, dpi, dpi, PixelFormats.Bgra32, null,
+                            pageReader.GetImage(), width * 4);
+                        page.Freeze();
+                        pages.Add(page);
                     }
                 }
             }
