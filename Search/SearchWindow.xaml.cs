@@ -23,6 +23,7 @@ namespace DocumentViewer.Search
             CostDrvBox.Text = current.AcCostDrv;
             DateFromPicker.SelectedDate = current.DateFrom?.ToDateTime(TimeOnly.MinValue);
             DateToPicker.SelectedDate = current.DateTo?.ToDateTime(TimeOnly.MinValue);
+            DocTypeBox.SelectedValue = current.DocType;
         }
 
         private void SearchButton_OnClick(object sender, RoutedEventArgs e)
@@ -60,6 +61,9 @@ namespace DocumentViewer.Search
                 ShowError("Vnesi vsaj en kriterij iskanja.");
                 return;
             }
+
+            if (DocTypeBox.SelectedValue is string docType)
+                values["DocType"] = docType;
 
             Filter = SearchArgsParser.Parse(values);
             DialogResult = true;

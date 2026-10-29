@@ -5,7 +5,8 @@
         Title="Iskanje" Language="sl-SI" Width="420" SizeToContent="Height" ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
         Background="{DynamicResource SurfaceBrush}" TextElement.FontSize="13"
-        FocusManager.FocusedElement="{Binding ElementName=IssuerBox}">
+        FocusManager.FocusedElement="{Binding ElementName=IssuerBox}"
+        UseLayoutRounding="True">
     <StackPanel Margin="20">
         <TextBlock Text="Izdajatelj" Margin="0,0,0,4"/>
         <ui:TextBox x:Name="IssuerBox" Margin="0,0,0,12"/>
@@ -37,6 +38,15 @@
 
         <TextBlock Text="Ključ" Margin="0,0,0,4"/>
         <ui:TextBox x:Name="KeyBox" Margin="0,0,0,12"/>
+
+        <TextBlock Text="Tip dokumenta" Margin="0,0,0,4"/>
+        <ComboBox x:Name="DocTypeBox" SelectedValuePath="Tag" Margin="0,0,0,12">
+            <ComboBoxItem Content="Račun" Tag="racuni"></ComboBoxItem>
+            <ComboBoxItem Content="Dobavnica" Tag="dobavnica"></ComboBoxItem>
+            <ComboBoxItem Content="Naročilo" Tag="izd_narocilo"></ComboBoxItem>
+            <ComboBoxItem Content="Ponudba" Tag="narocilo"></ComboBoxItem>
+
+        </ComboBox>
 
         <TextBlock x:Name="ErrorText" Foreground="{DynamicResource ErrorBrush}" TextWrapping="Wrap"
                    Margin="0,0,0,12" Visibility="Collapsed"/>
